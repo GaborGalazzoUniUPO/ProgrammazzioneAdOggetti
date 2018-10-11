@@ -12,12 +12,8 @@ public class RefactorString {
 
     private static String replaceWhithQuestionMark(String s, char c) {
         StringBuilder result = new StringBuilder();
-        for(int i = 0; i< s.length(); i++){
-            if(s.charAt(i) == c)
-                result.append("?");
-            else
-                result.append(s.charAt(i));
-        }
+        for(int i = 0; i< s.length(); i++)
+            result.append(s.charAt(i) == c ? '?':s.charAt(i));
         return result.toString();
     }
 }
