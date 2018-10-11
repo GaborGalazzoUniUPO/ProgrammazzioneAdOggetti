@@ -9,7 +9,7 @@ public class PointDistance {
         System.out.println("Inserisci il secondo putno:");
         Point p2 = requestPoint();
 
-        System.out.println("La distanza tra i due punti e': "+p1.distance(p2));
+        System.out.println(String.format("La distanza tra i due punti e': %.4f",p1.distance(p2)));
     }
 
     private static Point requestPoint() {
