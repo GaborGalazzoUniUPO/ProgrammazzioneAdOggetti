@@ -3,7 +3,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PhoneBookGiannini {
+public class PhoneBookTestGiannini {
 
     @Before
     public void creazione() {
