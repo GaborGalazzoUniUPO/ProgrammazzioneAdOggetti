@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class PhoneBook {
 
-    public static final int MAX_SIZE = 3;
+    public static final int MAX_SIZE = 6;
 
 
     private static ArrayList<String> phoneBook;
@@ -52,5 +52,13 @@ public class PhoneBook {
         if(phoneBook == null || phoneBook.size() == 0)
             return false;
         return phoneBook.get(phoneBook.size()-1).equals(s);
+    }
+
+    public static boolean delete(String entry) {
+        ArrayList<String> toDelete = new ArrayList<>();
+        for(String contact : phoneBook)
+            if(contact.startsWith(entry))
+               toDelete.add(contact);
+        return phoneBook.removeAll(toDelete);
     }
 }
