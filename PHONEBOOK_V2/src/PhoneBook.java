@@ -50,17 +50,6 @@ public class PhoneBook {
         return findResults;
     }
 
-    public boolean isFirst(String s) {
-        if(phoneBook == null  || phoneBook.size() == 0)
-            return false;
-        return phoneBook.get(0).equals(s);
-    }
-
-    public boolean isLast(String s) {
-        if(phoneBook == null || phoneBook.size() == 0)
-            return false;
-        return phoneBook.get(phoneBook.size()-1).equals(s);
-    }
 
     public boolean delete(String entry) {
         ArrayList<String> toDelete = find(entry);
