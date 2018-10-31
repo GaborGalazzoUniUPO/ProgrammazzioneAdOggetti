@@ -63,10 +63,7 @@ public class PhoneBook {
     }
 
     public boolean delete(String entry) {
-        ArrayList<String> toDelete = new ArrayList<>();
-        for(String contact : phoneBook)
-            if(contact.startsWith(entry))
-               toDelete.add(contact);
+        ArrayList<String> toDelete = find(entry);
         return phoneBook.removeAll(toDelete);
     }
 
