@@ -138,4 +138,14 @@ public class PhoneBookTestGiannini {
         phoneBook.add("Sara=0354768912");
         phoneBook.add("Giorgio=7689453201");
     }
+
+    @Test
+    public void toStringTest(){
+        testAggiungi();
+        String s = phoneBook.toString();
+        String sA[] = s.split(",");
+        for(String c: sA){
+            assertTrue(phoneBook.find(c).size() >0 );
+        }
+    }
 }

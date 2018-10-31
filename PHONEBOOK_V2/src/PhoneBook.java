@@ -6,8 +6,8 @@ public class PhoneBook {
     private static int numPhonebooks = 0;
 
     public final int MAX_SIZE;
-    private ArrayList<String> phoneBook;
-    private String name;
+    private final ArrayList<String> phoneBook;
+    private final String name;
 
 
     public PhoneBook(){
@@ -77,6 +77,10 @@ public class PhoneBook {
 
     @Override
     public String toString() {
-        return Arrays.toString(phoneBook.toArray());
+        StringBuilder s = new StringBuilder();
+        for(String c: phoneBook)
+            s.append(c).append(",");
+        s.deleteCharAt(s.length()-1);
+        return s.toString();
     }
 }
