@@ -44,7 +44,7 @@ public class PhoneBook {
      * -2: Invalid Element: NOT ADDED
      */
     public int add(String s) {
-        if (!isValid(s))
+        if (!isValid(s)) /** TEST relativi -> {@link PhoneBookTestGiannini.failAggiungi() failAggiungi} */
             return -2;
         if (phoneBook.size() == MAX_SIZE)
             return -1;
