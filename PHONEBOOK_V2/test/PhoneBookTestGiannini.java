@@ -16,21 +16,35 @@ public class PhoneBookTestGiannini {
 
     @Before
     public void creazione() {
-        int old = PhoneBook.getNumPhonebooks();
+        int old = PhoneBook.getNumPhoneBooks();
         String name = TestUtils.randomString();
         int maxDim = TestUtils.randomInteger();
         phoneBook = new PhoneBook(maxDim, name);
-        assertEquals(old +1, phoneBook.getNumPhonebooks());
+        assertEquals(old +1, phoneBook.getNumPhoneBooks());
         assertEquals(maxDim, phoneBook.MAX_SIZE);
         assertEquals(name, phoneBook.getName());
+    }
+
+    @Test
+    public void failAggiungi(){
+        String noEquals = TestUtils.randomString();
+        assertEquals(-2, phoneBook.add(noEquals));
+        String noLeft = "="+TestUtils.randomString();
+        assertEquals(-2, phoneBook.add(noLeft));
+        String noRight = TestUtils.randomString()+"=";
+        assertEquals(-2, phoneBook.add(noRight));
+        String noRightEmpty = TestUtils.randomString()+"=   ";
+        assertEquals(-2, phoneBook.add(noRightEmpty));
+        String noLeftEmpty = "   ="+TestUtils.randomString();
+        assertEquals(-2, phoneBook.add(noLeftEmpty));
 
     }
 
     @Test
     public void emptyConstructor(){
-        int old = PhoneBook.getNumPhonebooks();
+        int old = PhoneBook.getNumPhoneBooks();
         PhoneBook phoneBook = new PhoneBook();
-        assertEquals(old +1, PhoneBook.getNumPhonebooks());
+        assertEquals(old +1, PhoneBook.getNumPhoneBooks());
         assertEquals(phoneBook.getName(), "Phonebook "+old);
         assertEquals(5, phoneBook.MAX_SIZE);
     }
@@ -50,7 +64,7 @@ public class PhoneBookTestGiannini {
     public void testAggiungi() {
         for(int i = 0; i < TestUtils.randomInteger(1, phoneBook.MAX_SIZE-1); i++) {
             assertEquals(i, phoneBook.size());
-            assertEquals(1, phoneBook.add(TestUtils.randomString()));
+            assertEquals(1, phoneBook.add(randomContact()));
             assertEquals(i+1, phoneBook.size());
         }
     }
@@ -59,7 +73,7 @@ public class PhoneBookTestGiannini {
     public void testAggiuntaMassima() {
         for(int i = 0; i < phoneBook.MAX_SIZE; i++) {
             assertEquals(i, phoneBook.size());
-            assertEquals(1, phoneBook.add(TestUtils.randomString()));
+            assertEquals(1, phoneBook.add(randomContact()));
             assertEquals(i+1, phoneBook.size());
         }
     }
@@ -67,7 +81,7 @@ public class PhoneBookTestGiannini {
     @Test
     public void testAggiuntaOltreLimite() {
         testAggiuntaMassima();
-        assertEquals(-1, phoneBook.add(TestUtils.randomString()));
+        assertEquals(-1, phoneBook.add(randomContact()));
         assertEquals(phoneBook.MAX_SIZE, phoneBook.size());
     }
 
@@ -147,5 +161,9 @@ public class PhoneBookTestGiannini {
         for(String c: sA){
             assertTrue(phoneBook.find(c).size() >0 );
         }
+    }
+
+    private String randomContact(){
+        return TestUtils.randomString()+"="+TestUtils.randomString();
     }
 }
