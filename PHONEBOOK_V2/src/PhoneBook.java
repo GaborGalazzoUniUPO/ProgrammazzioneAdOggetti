@@ -41,7 +41,7 @@ public class PhoneBook {
      * @return 1: Added Correctly <br/>
      * 0: Duplicate found: NOT ADDED <br/>
      * -1: MAX_SIZE achieved: NOT ADDED <br/>
-     * -2: Invalid Element: NOT ADDED
+     * -2: Invalid Element: NOT ADDED -> {@link #isValid(String)}
      */
     public int add(String s) {
         if (!isValid(s)) /** TEST relativi -> {@link PhoneBookTestGiannini.failAggiungi() failAggiungi} */
