@@ -41,7 +41,8 @@ public class Contact {
      * @param name contact's name
      */
     public Contact(String name) {
-        this(name, "", "");
+        // this(name, "", ""); -> FIX REDUNDANCY
+        this(name, "");
     }
 
     /**
