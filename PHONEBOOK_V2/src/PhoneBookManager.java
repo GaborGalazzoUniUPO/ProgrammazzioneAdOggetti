@@ -1,11 +1,9 @@
-package src;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PhoneBookManager {
 
-    private static HashMap<String, src.PhoneBook> phoneBookList;
+    private static HashMap<String, PhoneBook> phoneBookList;
 
     /**
      * Initialize the hashMap

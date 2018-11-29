@@ -1,4 +1,3 @@
-package test;
 
 import gabor.utils.TestUtils;
 import org.junit.After;
