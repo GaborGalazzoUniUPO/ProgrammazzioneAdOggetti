@@ -1,3 +1,5 @@
+package palyer;
+
 public class Attempt {
 
     private final String guess;
@@ -25,7 +27,7 @@ public class Attempt {
 
     @Override
     public String toString() {
-        return "Attempt{" +
+        return "palyer.Attempt{" +
                 "guess='" + guess + '\'' +
                 ", maggot=" + maggot +
                 ", bulls=" + bulls +

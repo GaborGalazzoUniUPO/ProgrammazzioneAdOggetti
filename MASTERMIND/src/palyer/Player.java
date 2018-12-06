@@ -1,3 +1,8 @@
+package palyer;
+
+import palyer.Attempt;
+import util.Judge;
+
 import java.util.ArrayList;
 
 public abstract class Player {

@@ -1,4 +1,7 @@
+package palyer;
+
 import jbook.util.Input;
+import util.Judge;
 
 public class Human extends Player {
     @Override

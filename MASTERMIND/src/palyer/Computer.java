@@ -1,3 +1,7 @@
+package palyer;
+
+import util.Judge;
+
 public class Computer extends Player {
     @Override
     public String genGuess() {

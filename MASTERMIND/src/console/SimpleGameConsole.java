@@ -1,6 +1,9 @@
-import jbook.util.Input;
+package console;
 
-public class GameConsole {
+import jbook.util.Input;
+import util.Judge;
+
+public class SimpleGameConsole {
 
     private static int LIMIT = 12;
 

@@ -1,5 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
+import palyer.Computer;
+import util.Judge;
 
 import static org.junit.Assert.*;
 
