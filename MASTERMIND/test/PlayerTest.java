@@ -9,7 +9,17 @@ public class PlayerTest {
 
     @Before
     public void setUp() throws Exception {
-        player = new Computer();
+        player = new Player() {
+            @Override
+            public String genGuess() {
+                return null;
+            }
+
+            @Override
+            public String genTarget() {
+                return null;
+            }
+        };
     }
 
     @Test
