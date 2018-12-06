@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Judge {
 
-    private static final int MAX_PEGS = 4;
-    private static final char PEGS[] = {'0','1','2','3','4','5','6','7','8','9'};
+    public static final int MAX_PEGS = 4;
+    public static final char PEGS[] = {'0','1','2','3','4','5','6','7','8','9'};
 
     /**
      * Validate a Character c
