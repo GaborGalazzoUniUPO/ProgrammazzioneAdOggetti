@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public abstract class Player {
     private String target;
-    private ArrayList<Attempt> attempts;
+    protected ArrayList<Attempt> attempts;
 
     public Player() {
         attempts = new ArrayList<>();
@@ -27,7 +27,7 @@ public abstract class Player {
     }
 
     public String attemptToString(){
-        return attempts.toString();
+        return attempts.toString().replace("}, ", "}, \n");
     }
 
     public void init(){

@@ -3,6 +3,7 @@ package console;
 import jbook.util.Input;
 import palyer.Computer;
 import palyer.Human;
+import palyer.SmartComputer;
 import util.Judge;
 
 public class GameConsole {
@@ -51,8 +52,11 @@ public class GameConsole {
             human = new Human();
         else
             human.init();
+        do
+            risposta = Input.readString("Vuoi giocare contro un computer intelligente? (y/n)");
+        while (!(risposta.equals("y")) && !(risposta.equals("n")));
         if(computer == null)
-            computer = new Computer();
+            computer = risposta.equals("y")? new SmartComputer() : new Computer();
         else
             computer.init();
         targetC = computer.getTarget();
@@ -69,8 +73,8 @@ public class GameConsole {
         numMU = Judge.numMaggots(guessU, targetC);
         numBC = Judge.numBulls(guessC, targetU);
         numMC = Judge.numMaggots(guessC, targetU);
-        computer.addAttempt(guessC, numBC, numMC);
-        human.addAttempt(guessU, numBU, numMU);
+        computer.addAttempt(guessC, numMC, numBC);
+        human.addAttempt(guessU, numMU, numBU);
     }
 
     /**

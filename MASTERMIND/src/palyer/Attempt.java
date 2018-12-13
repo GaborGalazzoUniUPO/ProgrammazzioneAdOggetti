@@ -3,12 +3,12 @@ package palyer;
 public class Attempt {
 
     private final String guess;
-    private final int maggot;
+    private final int maggots;
     private final int bulls;
 
-    public Attempt(String guess, int maggot, int bulls) {
+    public Attempt(String guess, int maggots, int bulls) {
         this.guess = guess;
-        this.maggot = maggot;
+        this.maggots = maggots;
         this.bulls = bulls;
     }
 
@@ -16,8 +16,8 @@ public class Attempt {
         return guess;
     }
 
-    public int getMaggot() {
-        return maggot;
+    public int getMaggots() {
+        return maggots;
     }
 
     public int getBulls() {
@@ -29,7 +29,7 @@ public class Attempt {
     public String toString() {
         return "palyer.Attempt{" +
                 "guess='" + guess + '\'' +
-                ", maggot=" + maggot +
+                ", maggots=" + maggots +
                 ", bulls=" + bulls +
                 '}';
     }
