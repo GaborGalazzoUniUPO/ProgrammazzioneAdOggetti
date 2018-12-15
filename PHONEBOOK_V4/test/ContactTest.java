@@ -14,18 +14,41 @@ public class ContactTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void constructor1() throws InvalidEmailException, InvalidPhoneNumberException {
+    public void constructor1(){
         String name = TestUtils.randomString(10);
         String email = name+"@mail.com";
         StringBuilder phones = new StringBuilder();
         for(int i = 0; i< 5; i++){
-            phones.append(TestUtils.randomString(10)).append(",");
+            phones.append(TestUtils.randomInteger(300000000, 340000000)).append(",");
         }
-        phones.append(TestUtils.randomString(10));
-        Contact c = new Contact(name, email, phones.toString());
-        assertEquals(name, c.name);
-        assertEquals(email, c.getEmail());
-        assertFalse(c.getPhones().hasNext());
+        phones.append(TestUtils.randomInteger(300000000, 340000000));
+        try
+        {
+            Contact c = new Contact(name, email, phones.toString());
+            assertEquals(name, c.name);
+            assertEquals(email, c.getEmail());
+            assertTrue(c.getPhones().hasNext());
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
+
+        try
+        {
+            new Contact(name, name, phones.toString());
+            fail();
+        } catch (InvalidPhoneNumberException e)
+        {
+            fail();
+        } catch (InvalidEmailException ignored){}
+
+        try
+        {
+            new Contact(name, email, TestUtils.randomString(10));
+            fail();
+        } catch (InvalidEmailException e)
+        {
+            fail();
+        } catch (InvalidPhoneNumberException ignored){}
     }
 
     @Test
@@ -49,6 +72,7 @@ public class ContactTest {
 
     @Test
     public void getSetEmail() throws InvalidEmailException, InvalidPhoneNumberException {
+        exception.expect(InvalidEmailException.class);
         String name = TestUtils.randomString(10);
         Contact c = new Contact(name);
         String email = TestUtils.randomString(10)+"@mail.com";
@@ -60,4 +84,18 @@ public class ContactTest {
     }
 
 
+    @Test
+    public void addPhone() throws InvalidEmailException, InvalidPhoneNumberException
+    {
+        exception.expect(InvalidPhoneNumberException.class);
+        String name = TestUtils.randomString(10);
+        Contact c = new Contact(name);
+        String p = TestUtils.randomInteger(300000000, 340000000)+"";
+        c.addPhone(p);
+        assertTrue(c.getPhones().hasNext());
+        assertEquals(p, c.getPhones().next());
+
+        c.addPhone(p+TestUtils.randomString(3));
+
+    }
 }

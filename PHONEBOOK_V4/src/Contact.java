@@ -56,7 +56,7 @@ public class Contact {
      * Add a phone number
      * @param phone number to add
      */
-    private void addPhone(String phone) throws InvalidPhoneNumberException {
+    public void addPhone(String phone) throws InvalidPhoneNumberException {
         if(phone.matches("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"))
             phones.add(phone);
         else

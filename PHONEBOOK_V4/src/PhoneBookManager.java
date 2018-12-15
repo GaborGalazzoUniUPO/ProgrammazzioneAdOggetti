@@ -57,7 +57,7 @@ public class PhoneBookManager {
      *          See also {@link PhoneBook#add(String)}
      *
      */
-    public static boolean add(String phoneBookName, String contact) throws SizeLimitExceededException, InvalidEmailException, InvalidPhoneNumberException, InstanceAlreadyExistsException, InstanceNotFoundException {
+    public static boolean add(String phoneBookName, Contact contact) throws SizeLimitExceededException, InstanceAlreadyExistsException, InstanceNotFoundException {
         PhoneBook phoneBook = phoneBookList.get(phoneBookName);
         if(phoneBook == null)
             throw new InstanceNotFoundException(phoneBookName+" not found in phoneBookList");
