@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
+import java.util.List;
 
 public class GUI
 {
@@ -49,8 +50,9 @@ public class GUI
 		System.out.println("|        5. Get all appointment sorted   |");
 		System.out.println("|        6. Save appointment to file     |");
 		System.out.println("|        7. Load appointment from file   |");
+		System.out.println("|        8. Modify appointment           |");
 		System.out.println("|                                        |");
-		System.out.println("|        8. Exit                         |");
+		System.out.println("|        9. Exit                         |");
 		System.out.println("|________________________________________|");
 		int option = 0;
 		try
@@ -80,9 +82,80 @@ public class GUI
 				loadAppointment();
 				break;
 			case 8:
+				modifyAppointment();
+				break;
+			case 9:
 				exit();
 				break;
 		}
+	}
+
+	private void modifyAppointment()
+	{
+		System.out.println("MODIFY APPOINTMENT ACTION");
+		List<Appointment> res = agenda.getAll();
+		if (agenda.getAll().isEmpty())
+		{
+			System.out.println("Your agenda is empty.");
+			return;
+		}
+		for (int i = 0; i < res.size(); i++)
+		{
+			System.out.println("----- (" + (i + 1) + ") -----");
+			System.out.println(res.get(i));
+			System.out.println("----- (" + (i + 1) + ") -----");
+		}
+		Appointment old = null;
+		try
+		{
+			int index = Input.readInt("Which one you want to modify? (number)\n>");
+			old = res.get(index);
+
+			String date = Input.readString("Date (dd-MM-yyyy)[default: " + old.getDate() + "]: ");
+			if (date.isEmpty())
+				date = old.getDate();
+			String time = Input.readString("Time (HH-mm)[default: " + old.getTime() + "]: ");
+			if (time.isEmpty())
+				time = old.getTime();
+			int duration = old.getDuration();
+			String durationS = Input.readString("Duration (min)[default: " + old.getDuration() + "]: ");
+			if (!durationS.isEmpty())
+				duration = Integer.parseInt(durationS);
+			String with = Input.readString("With whom [default: " + old.getWith() + "]: ");
+			if (with.isEmpty())
+				with = old.getWith();
+			String where = Input.readString("Where [default: " + old.getWhere() + "]: ");
+			if (where.isEmpty())
+				where = old.getWhere();
+
+			Appointment appointment = new Appointment(date, time, duration, with, where);
+
+			agenda.remove(old);
+			agenda.add(appointment);
+
+			System.out.println();
+			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
+			System.out.println();
+			pressReturnToContinue();
+		} catch (Exception e)
+		{
+			handleError("Can't modify appointment!", e);
+		} catch (AppointmentCollisionException e)
+		{
+			try
+			{
+				agenda.add(old);
+			} catch (AppointmentCollisionException e1)
+			{
+				throw new RuntimeException(e1);
+			}
+			System.out.println("Can't create appointment!");
+			System.out.println("Your new appointment overlap this appointment:");
+			System.out.println(e.getAppointment());
+			pressReturnToContinue();
+		}
+
+		pressReturnToContinue();
 	}
 
 	private void exit()
@@ -103,8 +176,7 @@ public class GUI
 			System.out.println("APPOINTMENT LOADED SUCCESSFULLY from "+filename+"!");
 		} catch (IOException e)
 		{
-			System.out.println("Can't load appointment!");
-			System.out.println("Error: "+e.getMessage());
+			handleError("Can't read appointment!", e);
 
 		}
 		pressReturnToContinue();
@@ -122,8 +194,7 @@ public class GUI
 			System.out.println("APPOINTMENT SAVED SUCCESSFULLY in "+filename+"!");
 		} catch (IOException e)
 		{
-			System.out.println("Can't save appointment!");
-			System.out.println("Error: "+e.getMessage());
+			handleError("Can't write appointment!", e);
 
 		}
 		pressReturnToContinue();
@@ -131,6 +202,7 @@ public class GUI
 
 	private void getAllAppointmentSorted()
 	{
+		System.out.println("GET ALL SORTED APPOINTMENT ACTION");
 		for(Appointment appointment: agenda.getAll())
 			System.out.println(appointment);
 		if(agenda.getAll().isEmpty())
@@ -141,15 +213,57 @@ public class GUI
 	private void findAppointmentByDate()
 	{
 
+		System.out.println("FIND APPOINTMENT BY DATE ACTION");
+		String date = Input.readString("Insert the date\n>");
+		List<Appointment> res = agenda.findByDate(date);
+		for(Appointment appointment: res)
+			System.out.println(appointment);
+		if(res.isEmpty())
+			System.out.println("You have no appointment saved for "+date);
+		pressReturnToContinue();
 	}
 
 	private void findAppointmentByWith()
 	{
 
+		System.out.println("FIND APPOINTMENT BY WITH ACTION");
+		String needle = Input.readString("Insert needle\n>");
+		List<Appointment> res = agenda.findByWith(needle);
+		for(Appointment appointment: res)
+			System.out.println(appointment);
+		if(res.isEmpty())
+			System.out.println("You have no appointment saved containing \""+needle+"\"");
+		pressReturnToContinue();
 	}
 
 	private void removeAppointment()
 	{
+		System.out.println("REMOVE APPOINTMENT ACTION");
+		List<Appointment> res = agenda.getAll();
+		if(agenda.getAll().isEmpty())
+		{
+			System.out.println("Your agenda is empty.");
+			return;
+		}
+		for(int i = 0; i<res.size(); i++)
+		{
+			System.out.println("----- ("+(i+1)+") -----");
+			System.out.println(res.get(i));
+			System.out.println("----- ("+(i+1)+") -----");
+		}
+		try
+		{
+			int index = Input.readInt("Which one you want to remove? (number)\n>");
+			agenda.remove(res.get(index - 1));
+			System.out.println();
+			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
+			System.out.println();
+			pressReturnToContinue();
+		}catch (Exception e){
+			handleError("Can't remove appointment!", e);
+		}
+
+		pressReturnToContinue();
 
 	}
 
@@ -173,10 +287,7 @@ public class GUI
 
 		} catch (ParseException | InvalidParameterException e)
 		{
-			System.out.println("Can't create appointment!");
-			System.out.println("Error: "+e.getMessage());
-			pressReturnToContinue();
-
+			handleError("Can't create appointment!", e);
 		} catch (AppointmentCollisionException e)
 		{
 			System.out.println("Can't create appointment!");
@@ -186,5 +297,11 @@ public class GUI
 		}
 
 
+	}
+
+	private void handleError(String message, Exception e){
+		System.out.println(message);
+		System.out.println("Error: "+e.getMessage());
+		pressReturnToContinue();
 	}
 }
