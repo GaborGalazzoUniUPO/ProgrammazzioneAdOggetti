@@ -5,12 +5,12 @@ import uniupo.gaborgalazzo.rogue.model.elements.Element;
 
 public class Prison {
 
-    private int currentFloor;
+    private int currentRoom;
 
     private Room[] rooms;
 
     public Prison(int floors) {
-        currentFloor = 0;
+        currentRoom = 0;
         rooms = new Room[floors];
     }
 

@@ -6,6 +6,12 @@ public abstract class Element {
     private int y;
     private int room;
 
+    public Element(int room, int x, int y){
+        this.room = room;
+        this.x = x;
+        this.y = y;
+    }
+
     public int getX() {
         return x;
     }

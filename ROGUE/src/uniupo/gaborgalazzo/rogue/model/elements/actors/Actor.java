@@ -10,8 +10,19 @@ public abstract class Actor extends Element {
     private int actualStrength;
     private Weapon weapon;
 
-    public void decrementStrenght(int amount){
+    public Actor(int room, int x, int y, int maxStrength, int actualStrength, Weapon weapon)
+    {
+        super(room, x, y);
+        setMaxStrength(maxStrength);
+        setActualStrength(actualStrength);
+        setWeapon(weapon);
+    }
+
+    public int decrementStrenght(int amount){
         actualStrength -= amount;
+        if(actualStrength<0)
+            actualStrength = 0;
+        return actualStrength;
     }
 
 
@@ -25,4 +36,31 @@ public abstract class Actor extends Element {
         return actualStrength < 1;
     }
 
+    public int getActualStrength(){
+        return actualStrength;
+    }
+
+    public int getMaxStrength(){
+        return maxStrength;
+    }
+
+    public void setMaxStrength(int maxStrength)
+    {
+        this.maxStrength = maxStrength;
+    }
+
+    public void setActualStrength(int actualStrength)
+    {
+        this.actualStrength = actualStrength;
+    }
+
+    public Weapon getWeapon()
+    {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon)
+    {
+        this.weapon = weapon;
+    }
 }

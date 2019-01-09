@@ -13,12 +13,12 @@ public class GameEngine {
     private ArrayList<Monster> monsters;
     private int time;
 
-    public void genPrison(){
-
+    public static Prison genPrison(){
+        return null;
     }
 
-    public void genPrison(String s){
-
+    public static Prison genPrison(String s){
+        return null;
     }
 
     public void tick(){
