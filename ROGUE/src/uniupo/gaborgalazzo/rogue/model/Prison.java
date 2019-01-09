@@ -9,13 +9,17 @@ public class Prison {
 
     private Room[] rooms;
 
-    public Element placeElement(Element element, int room, int x, int y) throws PositionNotEmptyException {
+    public Prison(int floors) {
+        currentFloor = 0;
+        rooms = new Room[floors];
+    }
 
-        Element e = rooms[room].placeElement(element, x, y);
-        e.setX(x);
-        e.setY(y);
-        e.setRoom(room);
-        return e;
+    public void placeElement(Element element, int room, int x, int y) throws PositionNotEmptyException {
+
+        rooms[room].placeElement(element, x, y);
+        element.setX(x);
+        element.setY(y);
+        element.setRoom(room);
 
     }
 
@@ -25,10 +29,42 @@ public class Prison {
         element.setX(x);
         element.setY(y);
         element.setRoom(room);
+        e.setX(-1);
+        e.setY(-1);
+        e.setRoom(-1);
         return e;
     }
 
     public Element removeElement(int room,  int x, int y){
         return rooms[room].replaceElement(null, x, y);
+    }
+
+    public Element getRoomPositionContent(int room, int x, int y){ return rooms[room].getPositionContent(x,y); }
+
+    private class Room {
+
+        private Element[][] positions;
+
+        private Room(int x, int y){
+            positions = new Element[x][y];
+        }
+
+        void placeElement(Element element, int x, int y) throws PositionNotEmptyException {
+            if(getPositionContent(x,y)!=null)
+                throw new PositionNotEmptyException(this, x, y);
+            replaceElement(element, x, y);
+
+        }
+
+        Element replaceElement(Element element, int x, int y){
+
+            Element old = positions[x][y];
+            positions[x][y] = element;
+            return old;
+        }
+
+        Element getPositionContent(int x, int y){
+            return positions[x][y];
+        }
     }
 }
