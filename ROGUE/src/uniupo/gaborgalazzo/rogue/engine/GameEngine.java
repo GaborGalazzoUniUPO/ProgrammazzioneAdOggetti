@@ -1,4 +1,8 @@
-package uniupo.gaborgalazzo.rogue;
+package uniupo.gaborgalazzo.rogue.engine;
+
+import uniupo.gaborgalazzo.rogue.model.elements.actors.Monster;
+import uniupo.gaborgalazzo.rogue.model.elements.actors.Player;
+import uniupo.gaborgalazzo.rogue.model.Prison;
 
 import java.util.ArrayList;
 
@@ -23,7 +27,8 @@ public class GameEngine {
            //TODO: move m
         }
         for (Monster m : monsters) {
-            //TODO: if m.isDead() remove m
+            if(m.isDead())
+                prison.removeElement(m.getRoom(), m.getX(), m.getY());
         }
         if(time%3==1);
             //TODO: increment player power
@@ -31,6 +36,7 @@ public class GameEngine {
     }
 
     public boolean isGameEnd(){
-        if(player.isDead() || prison.getExit())
+        //TODO: player.isDead() || player has reached exit
+        return false;
     }
 }
