@@ -252,14 +252,16 @@ public class GUI
 
 	private void addAppointment()
 	{
-		System.out.println("ADD APPOINTMENT ACTION");
-		String date = Input.readString("Date (dd-MM-yyyy): ");
-		String time = Input.readString("Time (HH-mm): ");
-		int duration = Input.readInt("Duration (min): ");
-		String with = Input.readString("With whom: ");
-		String where = Input.readString("Where: ");
+
 		try
 		{
+			System.out.println("ADD APPOINTMENT ACTION");
+			String date = Input.readString("Date (dd-MM-yyyy): ");
+			String time = Input.readString("Time (HH-mm): ");
+			int duration = Input.readInt("Duration (min): ");
+			String with = Input.readString("With whom: ");
+			String where = Input.readString("Where: ");
+
 			Appointment appointment = new Appointment(date, time, duration, with, where);
 			agenda.add(appointment);
 
@@ -278,14 +280,14 @@ public class GUI
 	private void printIndexedList(List list){
 		if(list.isEmpty())
 		{
-			System.out.println("Your agenda is empty.");
+			System.out.println("No results");
 			return;
 		}
 		for(int i = 0; i<list.size(); i++)
 		{
 			System.out.println("----- ("+(i+1)+") -----");
 			System.out.println(list.get(i));
-			System.out.println("----- ("+(i+1)+") -----");
+			System.out.println();
 		}
 	}
 
