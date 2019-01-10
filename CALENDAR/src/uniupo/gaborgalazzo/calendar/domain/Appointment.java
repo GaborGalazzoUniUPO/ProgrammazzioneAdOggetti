@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -23,6 +24,7 @@ public class Appointment implements Comparable<Appointment>, Serializable
 
 	public static final SimpleDateFormat APPOINTMENT_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 	public static final SimpleDateFormat APPOINTMENT_TIME_FORMAT = new SimpleDateFormat("HH-mm");
+
 
 	public Appointment(String date, String time, int duration, String with, String where) throws ParseException, InvalidParameterException
 	{

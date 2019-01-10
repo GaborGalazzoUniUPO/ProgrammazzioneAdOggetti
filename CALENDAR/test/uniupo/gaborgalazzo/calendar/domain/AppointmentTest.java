@@ -49,6 +49,24 @@ public class AppointmentTest
 			fail();
 		} catch (ParseException ignored){}
 
+		try
+		{
+			TestUtils.randomAppointment("31-02-2018", appointment.getTime());
+			fail();
+		} catch (ParseException ignored){}
+
+		try
+		{
+			TestUtils.randomAppointment(TestUtils.randomInteger(31,100)+"-"+TestUtils.randomInteger(1,12)+"-"+TestUtils.randomInteger(2000,20010), appointment.getTime());
+			fail();
+		} catch (ParseException ignored){}
+
+		try
+		{
+			TestUtils.randomAppointment(TestUtils.randomInteger(0,28)+"-"+TestUtils.randomInteger(13,100)+"-"+TestUtils.randomInteger(2000,20010), appointment.getTime());
+			fail();
+		} catch (ParseException ignored){}
+
 
 	}
 
