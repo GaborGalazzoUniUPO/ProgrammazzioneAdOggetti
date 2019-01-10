@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 public class PhoneBook implements Iterable<Contact>{
 
@@ -133,12 +134,7 @@ public class PhoneBook implements Iterable<Contact>{
      * @return The list of found elements
      */
     public ArrayList<Contact> findByName(String name) {
-        ArrayList<Contact> findResults = new ArrayList<>();
-        for (Contact elem :
-                phoneBook)
-            if (elem.name.startsWith(name))
-                findResults.add(elem);
-        return findResults;
+        return findByPredicate(e -> e.name.startsWith(name));
     }
 
     /**
@@ -147,10 +143,19 @@ public class PhoneBook implements Iterable<Contact>{
      * @return The list of found elements
      */
     public ArrayList<Contact> findByEmail(String email) {
+        return findByPredicate(e -> e.getEmail().startsWith(email));
+    }
+
+    /**
+     * Find all contact in <b>phoneBook</b> by predicate <b>predicate</b>
+     * @param predicate the predicate
+     * @return a filtrated list
+     */
+    public ArrayList<Contact> findByPredicate(Predicate<Contact> predicate){
         ArrayList<Contact> findResults = new ArrayList<>();
         for (Contact elem :
                 phoneBook)
-            if (elem.getEmail().startsWith(email))
+            if (predicate.test(elem))
                 findResults.add(elem);
         return findResults;
     }

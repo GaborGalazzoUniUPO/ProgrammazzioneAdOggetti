@@ -26,9 +26,11 @@ public class Appointment implements Comparable<Appointment>, Serializable
 
 	public Appointment(String date, String time, int duration, String with, String where) throws ParseException, InvalidParameterException
 	{
-		APPOINTMENT_DATE_FORMAT.parse(date);
+		if(!APPOINTMENT_DATE_FORMAT.format(APPOINTMENT_DATE_FORMAT.parse(date)).equals(date))
+			throw new ParseException("Invalid date format (dd-MM-yyyy): "+date, 0);
 		this.date = date;
-		APPOINTMENT_TIME_FORMAT.parse(time);
+		if(!APPOINTMENT_TIME_FORMAT.format(APPOINTMENT_TIME_FORMAT.parse(time)).equals(time))
+			throw new ParseException("Invalid time format (HH-mm): "+time, 0);
 		this.time = time;
 		if(duration<0)
 			throw new InvalidParameterException("duration must be >= 0. "+duration+" received.");

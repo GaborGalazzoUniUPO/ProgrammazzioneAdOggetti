@@ -2,7 +2,7 @@ package uniupo.gaborgalazzo.calendar.exception;
 
 import uniupo.gaborgalazzo.calendar.domain.Appointment;
 
-public class AppointmentCollisionException extends Throwable
+public class AppointmentCollisionException extends Exception
 {
 	private final Appointment collision;
 
@@ -14,5 +14,11 @@ public class AppointmentCollisionException extends Throwable
 	public Appointment getAppointment()
 	{
 		return collision;
+	}
+
+	public String getMessage(){
+
+		return "Your new appointment overlap this appointment:\n"+
+		collision;
 	}
 }

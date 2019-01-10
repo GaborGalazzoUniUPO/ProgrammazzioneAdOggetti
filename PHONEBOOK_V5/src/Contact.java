@@ -124,7 +124,8 @@ public class Contact {
         for(i = 0; i<phones.size()-1; i++){
             s.append(phones.get(i)).append(",");
         }
-        s.append(phones.get(i));
+        if(i<phones.size())
+            s.append(phones.get(i));
         s.append("\"");
         return s.toString();
     }

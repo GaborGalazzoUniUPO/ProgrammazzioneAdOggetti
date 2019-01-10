@@ -5,6 +5,7 @@ import org.junit.Test;
 import uniupo.gaborgalazzo.calendar.domain.Agenda;
 import uniupo.gaborgalazzo.calendar.domain.Appointment;
 import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
+import uniupo.gaborgalazzo.calendar.exception.ReadException;
 import uniupo.gaborgalazzo.calendar.utils.TestUtils;
 
 import java.io.FileReader;
@@ -129,10 +130,42 @@ public class AgendaTest
 
 		assertTrue(agenda.getAll().isEmpty());
 
+
+
 		FileReader fileReader = new FileReader(filename);
-		agenda.readAgenda(fileReader);
+		ArrayList<ReadException> errors = agenda.readAgenda(fileReader);
 		fileReader.close();
 
+		assertTrue(errors.isEmpty());
 		assertTrue(agenda.getAll().containsAll(oldData));
+
+		fileReader = new FileReader(filename);
+		errors = agenda.readAgenda(fileReader);
+		fileReader.close();
+		assertTrue(errors.size()>0);
+
+		fileReader = new FileReader("not_json_array.json");
+		try {
+
+			agenda.readAgenda(fileReader);
+			fail();
+
+		}catch (IllegalStateException ignored){}
+
+		fileReader.close();
+
+		oldData = agenda.getAll();
+		for(Appointment appointment: oldData)
+			agenda.remove(appointment);
+
+		fileReader = new FileReader("incorrect_data.json");
+		errors = agenda.readAgenda(fileReader);
+		fileReader.close();
+		assertTrue(errors.size()>0);
+		for(ReadException exception: errors)
+			assertFalse(exception.getE() instanceof AppointmentCollisionException);
+
+
+		Files.delete(Paths.get(filename));
 	}
 }

@@ -3,12 +3,14 @@ package uniupo.gaborgalazzo.calendar.gui;
 import uniupo.gaborgalazzo.calendar.domain.Agenda;
 import uniupo.gaborgalazzo.calendar.domain.Appointment;
 import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
+import uniupo.gaborgalazzo.calendar.exception.ReadException;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GUI
@@ -22,6 +24,11 @@ public class GUI
 	private void pressReturnToContinue(){
 		System.out.println();
 		Input.readString("Press RETURN to continue...");
+		cleanConsole();
+	}
+	private void cleanConsole(){
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
 	}
 
 
@@ -59,6 +66,7 @@ public class GUI
 		{
 			option = Input.readInt(" Select option: ");
 		}catch (NumberFormatException ignored){}
+		cleanConsole();
 		switch (option){
 			case 1:
 				addAppointment();
@@ -88,28 +96,21 @@ public class GUI
 				exit();
 				break;
 		}
+		pressReturnToContinue();
 	}
 
 	private void modifyAppointment()
 	{
 		System.out.println("MODIFY APPOINTMENT ACTION");
 		List<Appointment> res = agenda.getAll();
-		if (agenda.getAll().isEmpty())
-		{
-			System.out.println("Your agenda is empty.");
-			return;
-		}
-		for (int i = 0; i < res.size(); i++)
-		{
-			System.out.println("----- (" + (i + 1) + ") -----");
-			System.out.println(res.get(i));
-			System.out.println("----- (" + (i + 1) + ") -----");
-		}
+		printIndexedList(res);
 		Appointment old = null;
 		try
 		{
-			int index = Input.readInt("Which one you want to modify? (number)\n>");
+			int index = Input.readInt("Which one you want to modify? (number)\n>")-1;
 			old = res.get(index);
+
+			agenda.remove(old);
 
 			String date = Input.readString("Date (dd-MM-yyyy)[default: " + old.getDate() + "]: ");
 			if (date.isEmpty())
@@ -129,18 +130,13 @@ public class GUI
 				where = old.getWhere();
 
 			Appointment appointment = new Appointment(date, time, duration, with, where);
-
-			agenda.remove(old);
 			agenda.add(appointment);
 
 			System.out.println();
 			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
 			System.out.println();
-			pressReturnToContinue();
-		} catch (Exception e)
-		{
-			handleError("Can't modify appointment!", e);
-		} catch (AppointmentCollisionException e)
+
+		}  catch (AppointmentCollisionException| ParseException e)
 		{
 			try
 			{
@@ -149,13 +145,8 @@ public class GUI
 			{
 				throw new RuntimeException(e1);
 			}
-			System.out.println("Can't create appointment!");
-			System.out.println("Your new appointment overlap this appointment:");
-			System.out.println(e.getAppointment());
-			pressReturnToContinue();
+			handleError("Can't create appointment!", e);
 		}
-
-		pressReturnToContinue();
 	}
 
 	private void exit()
@@ -171,15 +162,25 @@ public class GUI
 		try
 		{
 			FileReader fileReader = new FileReader(filename);
-			agenda.readAgenda(fileReader);
+			ArrayList<ReadException> errors = agenda.readAgenda(fileReader);
 			fileReader.close();
-			System.out.println("APPOINTMENT LOADED SUCCESSFULLY from "+filename+"!");
+			if(errors.size() == 0)
+				System.out.println("APPOINTMENT LOADED SUCCESSFULLY from "+filename+"!");
+			else{
+				System.out.println("ERRORS: "+errors.size());
+				for(ReadException error: errors){
+					System.out.println("_____________________________");
+					System.out.println(error.getMessage());
+					System.out.println("_____________________________");
+				}
+				System.out.println("OTHER APPOINTMENT LOADED SUCCESSFULLY from "+filename+"!");
+			}
+
 		} catch (IOException e)
 		{
 			handleError("Can't read appointment!", e);
 
 		}
-		pressReturnToContinue();
 	}
 
 	private void saveAppointment()
@@ -197,7 +198,6 @@ public class GUI
 			handleError("Can't write appointment!", e);
 
 		}
-		pressReturnToContinue();
 	}
 
 	private void getAllAppointmentSorted()
@@ -207,7 +207,6 @@ public class GUI
 			System.out.println(appointment);
 		if(agenda.getAll().isEmpty())
 			System.out.println("Your agenda is empty.");
-		pressReturnToContinue();
 	}
 
 	private void findAppointmentByDate()
@@ -220,7 +219,6 @@ public class GUI
 			System.out.println(appointment);
 		if(res.isEmpty())
 			System.out.println("You have no appointment saved for "+date);
-		pressReturnToContinue();
 	}
 
 	private void findAppointmentByWith()
@@ -233,24 +231,13 @@ public class GUI
 			System.out.println(appointment);
 		if(res.isEmpty())
 			System.out.println("You have no appointment saved containing \""+needle+"\"");
-		pressReturnToContinue();
 	}
 
 	private void removeAppointment()
 	{
 		System.out.println("REMOVE APPOINTMENT ACTION");
 		List<Appointment> res = agenda.getAll();
-		if(agenda.getAll().isEmpty())
-		{
-			System.out.println("Your agenda is empty.");
-			return;
-		}
-		for(int i = 0; i<res.size(); i++)
-		{
-			System.out.println("----- ("+(i+1)+") -----");
-			System.out.println(res.get(i));
-			System.out.println("----- ("+(i+1)+") -----");
-		}
+
 		try
 		{
 			int index = Input.readInt("Which one you want to remove? (number)\n>");
@@ -258,13 +245,9 @@ public class GUI
 			System.out.println();
 			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
 			System.out.println();
-			pressReturnToContinue();
 		}catch (Exception e){
 			handleError("Can't remove appointment!", e);
 		}
-
-		pressReturnToContinue();
-
 	}
 
 	private void addAppointment()
@@ -283,25 +266,31 @@ public class GUI
 			System.out.println();
 			System.out.println("APPOINTMENT ADDED SUCCESSFULLY!");
 			System.out.println();
-			pressReturnToContinue();
 
-		} catch (ParseException | InvalidParameterException e)
+		} catch (ParseException | InvalidParameterException| AppointmentCollisionException e)
 		{
 			handleError("Can't create appointment!", e);
-		} catch (AppointmentCollisionException e)
-		{
-			System.out.println("Can't create appointment!");
-			System.out.println("Your new appointment overlap this appointment:");
-			System.out.println(e.getAppointment());
-			pressReturnToContinue();
 		}
 
 
 	}
 
+	private void printIndexedList(List list){
+		if(list.isEmpty())
+		{
+			System.out.println("Your agenda is empty.");
+			return;
+		}
+		for(int i = 0; i<list.size(); i++)
+		{
+			System.out.println("----- ("+(i+1)+") -----");
+			System.out.println(list.get(i));
+			System.out.println("----- ("+(i+1)+") -----");
+		}
+	}
+
 	private void handleError(String message, Exception e){
 		System.out.println(message);
 		System.out.println("Error: "+e.getMessage());
-		pressReturnToContinue();
 	}
 }

@@ -3,12 +3,17 @@ package uniupo.gaborgalazzo.calendar.domain;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
+import uniupo.gaborgalazzo.calendar.exception.ReadException;
+import uniupo.gaborgalazzo.calendar.gui.Input;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Agenda implements Serializable, Iterable<Appointment>
@@ -35,30 +40,33 @@ public class Agenda implements Serializable, Iterable<Appointment>
 
 	public ArrayList<Appointment> findByWith(String with){
 
-		return appointments
-				.stream()
-				.filter(
+		return findByPredicate(
 						appointment ->
 								appointment.getWith().contains(with)
-				)
-				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
+				);
 	}
 
 	public ArrayList<Appointment> findByDate(String date){
 
-		return appointments
-				.stream()
-				.filter(
+		return findByPredicate(
 						appointment ->
 								appointment.getDate().equals(date)
-				)
-				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
+				);
 	}
 
 	public ArrayList<Appointment> getAll(){
 		return  appointments
 				.stream()
 				.sorted()
+				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
+	}
+
+	public ArrayList<Appointment> findByPredicate(Predicate<Appointment> predicate){
+		return appointments
+				.stream()
+				.filter(
+						predicate
+				)
 				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
 	}
 
@@ -80,10 +88,27 @@ public class Agenda implements Serializable, Iterable<Appointment>
 		writer.write(gson.toJson(appointments));
 	}
 
-	public void readAgenda(Reader reader){
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.create();
-		appointments = gson.fromJson(reader, new TypeToken<ArrayList<Appointment>>(){}.getType());
+	public ArrayList<ReadException> readAgenda(Reader reader) throws IllegalStateException{
+		// Read from File to String
+		ArrayList<ReadException> exceptions = new ArrayList<ReadException>();
+		JsonParser parser = new JsonParser();
+		JsonElement jsonElement = parser.parse(reader);
+		JsonArray jsonArray = jsonElement.getAsJsonArray();
+		for(JsonElement element: jsonArray){
+			JsonObject jsonObject = element.getAsJsonObject();
+			try {
+				String date = jsonObject.get("date").getAsString();
+				String time = jsonObject.get("time").getAsString();
+				int duration = jsonObject.get("duration").getAsInt();
+				String with = jsonObject.get("with").getAsString();
+				String where = jsonObject.get("where").getAsString();
+				Appointment appointment = new Appointment(date, time, duration, with, where);
+				add(appointment);
+			} catch (Exception e) {
+				exceptions.add(new ReadException(jsonObject, e));
+			}
+		}
+		return exceptions;
 	}
 
 
