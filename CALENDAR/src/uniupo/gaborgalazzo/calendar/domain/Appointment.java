@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class Appointment implements Comparable<Appointment>, Serializable
 {
@@ -28,11 +29,9 @@ public class Appointment implements Comparable<Appointment>, Serializable
 
 	public Appointment(String date, String time, int duration, String with, String where) throws ParseException, InvalidParameterException
 	{
-		if(!APPOINTMENT_DATE_FORMAT.format(APPOINTMENT_DATE_FORMAT.parse(date)).equals(date))
-			throw new ParseException("Invalid date format (dd-MM-yyyy): "+date, 0);
+		validateDate(date);
+		validateTime(time);
 		this.date = date;
-		if(!APPOINTMENT_TIME_FORMAT.format(APPOINTMENT_TIME_FORMAT.parse(time)).equals(time))
-			throw new ParseException("Invalid time format (HH-mm): "+time, 0);
 		this.time = time;
 		if(duration<0)
 			throw new InvalidParameterException("duration must be >= 0. "+duration+" received.");
@@ -41,14 +40,23 @@ public class Appointment implements Comparable<Appointment>, Serializable
 		this.with = with;
 	}
 
+	public static void validateDate(String date) throws ParseException {
+		if(!APPOINTMENT_DATE_FORMAT.format(APPOINTMENT_DATE_FORMAT.parse(date)).equals(date))
+			throw new ParseException("Invalid date format (dd-MM-yyyy): "+date, 0);
+	}
+
+	public static void validateTime(String time) throws ParseException {
+		if(!APPOINTMENT_TIME_FORMAT.format(APPOINTMENT_TIME_FORMAT.parse(time)).equals(time))
+			throw new ParseException("Invalid time format (HH-mm): "+time, 0);
+	}
+
 	public Date getDDate(){
 
 		try
 		{
 			Date datePart = APPOINTMENT_DATE_FORMAT.parse(getDate());
 			Date timePart = APPOINTMENT_TIME_FORMAT.parse(getTime());
-			Date dDate =  new Date(datePart.getTime() + timePart.getTime() + 3600000);
-			return dDate;
+			return new Date(datePart.getTime() + timePart.getTime() + TimeUnit.DAYS.toMillis(1));
 		} catch (ParseException e)
 		{
 			return null;
