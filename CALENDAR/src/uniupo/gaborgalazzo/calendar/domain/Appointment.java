@@ -1,19 +1,17 @@
 package uniupo.gaborgalazzo.calendar.domain;
 
 
-
 import com.sun.istack.internal.NotNull;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public class Appointment implements Comparable<Appointment>, Serializable
 {
@@ -23,37 +21,29 @@ public class Appointment implements Comparable<Appointment>, Serializable
 	private final String with;
 	private final String where;
 
-	public static final SimpleDateFormat APPOINTMENT_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-	public static final SimpleDateFormat APPOINTMENT_TIME_FORMAT = new SimpleDateFormat("HH-mm");
+	public static final DateTimeFormatter APPOINTMENT_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-uuuu").withResolverStyle(ResolverStyle.STRICT);
+	public static final DateTimeFormatter APPOINTMENT_TIME_FORMAT = DateTimeFormatter.ofPattern("HH-mm").withResolverStyle(ResolverStyle.STRICT);
 
 
-	public Appointment(String date, String time, int duration, String with, String where) throws ParseException, InvalidParameterException
+	public Appointment(String date, String time, int duration, String with, String where) throws DateTimeParseException, InvalidParameterException
 	{
-		APPOINTMENT_DATE_FORMAT.setLenient(false);
-		APPOINTMENT_TIME_FORMAT.setLenient(false);
-		APPOINTMENT_DATE_FORMAT.parse(date);
-		APPOINTMENT_TIME_FORMAT.parse(time);
+		LocalDate.parse(date, APPOINTMENT_DATE_FORMAT);
+		LocalTime.parse(time, APPOINTMENT_TIME_FORMAT);
 		this.date = date;
 		this.time = time;
-		if(duration<0)
-			throw new InvalidParameterException("duration must be >= 0. "+duration+" received.");
+		if (duration < 0)
+			throw new InvalidParameterException("duration must be >= 0. " + duration + " received.");
 		this.duration = duration;
 		this.where = where;
 		this.with = with;
 	}
 
 
-	public Date getDDate(){
-
-		try
-		{
-			Date datePart = APPOINTMENT_DATE_FORMAT.parse(getDate());
-			Date timePart = APPOINTMENT_TIME_FORMAT.parse(getTime());
-			return new Date(datePart.getTime() + timePart.getTime() + TimeUnit.DAYS.toMillis(1));
-		} catch (ParseException e)
-		{
-			return null;
-		}
+	public LocalDateTime getDateTime()
+	{
+		LocalDate datePart = LocalDate.parse(getDate(), APPOINTMENT_DATE_FORMAT);
+		LocalTime timePart = LocalTime.parse(getTime(), APPOINTMENT_TIME_FORMAT);
+		return LocalDateTime.of(datePart, timePart);
 	}
 
 	public String getDate()
@@ -85,11 +75,7 @@ public class Appointment implements Comparable<Appointment>, Serializable
 	@Override
 	public int compareTo(@NotNull Appointment o)
 	{
-		if( getDDate().getTime() - o.getDDate().getTime()<0)
-			return -1;
-		if( getDDate().getTime() - o.getDDate().getTime()==0)
-			return 0;
-		return 1;
+		return getDateTime().compareTo(o.getDateTime());
 	}
 
 	@Override
@@ -116,11 +102,11 @@ public class Appointment implements Comparable<Appointment>, Serializable
 	public String toString()
 	{
 		return "\n" +
-				String.format("%-12s", "Date:") + getDate() + "\n"+
-				String.format("%-12s", "Time:") + getTime() + "\n"+
-				String.format("%-12s", "Duration:") + getDuration() + "\n"+
-				String.format("%-12s", "With Whom:") + getWith() + "\n"+
-				String.format("%-12s", "Where:") + getWhere() + "\n"+
+				String.format("%-12s", "Date:") + getDate() + "\n" +
+				String.format("%-12s", "Time:") + getTime() + "\n" +
+				String.format("%-12s", "Duration:") + getDuration() + "\n" +
+				String.format("%-12s", "With Whom:") + getWith() + "\n" +
+				String.format("%-12s", "Where:") + getWhere() + "\n" +
 				"\n";
 	}
 }

@@ -1,17 +1,13 @@
 package uniupo.gaborgalazzo.calendar.domain;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
 import uniupo.gaborgalazzo.calendar.exception.ReadException;
-import uniupo.gaborgalazzo.calendar.gui.Input;
 
 import java.io.*;
-import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -73,8 +69,8 @@ public class Agenda implements Serializable, Iterable<Appointment>
 	private Appointment overlaps(Appointment appointment)
 	{
 		for(Appointment a: appointments){
-			Date aDateEnd = new Date(a.getDDate().getTime() + TimeUnit.MINUTES.toMillis(1) *a.getDuration());
-			if(appointment.getDDate().before(aDateEnd) && (appointment.getDDate().after(a.getDDate()) || appointment.getDDate().equals(a.getDDate())))
+			LocalDateTime aDateEnd = LocalDateTime.from(a.getDateTime()).plusMinutes(TimeUnit.MINUTES.toMillis(a.getDuration()));
+			if(appointment.getDateTime().isBefore(aDateEnd) && (appointment.getDateTime().isAfter(a.getDateTime()) || appointment.getDateTime().isEqual(a.getDateTime())))
 				return a;
 		}
 		return null;

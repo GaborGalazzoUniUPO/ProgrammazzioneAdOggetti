@@ -3,6 +3,9 @@ package uniupo.gaborgalazzo.calendar.utils;
 import uniupo.gaborgalazzo.calendar.domain.Appointment;
 
 import java.text.ParseException;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -41,31 +44,27 @@ public class TestUtils
 		return r.nextInt((max - min) + 1) + min;
 	}
 
-	public static Calendar randomDate()
+	public static LocalDateTime randomDate()
 	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.YEAR, randomInteger(2018,2020));
-		calendar.set(Calendar.DAY_OF_YEAR, randomInteger(1, calendar.getActualMaximum(Calendar.DAY_OF_YEAR)));
-		calendar.set(Calendar.HOUR_OF_DAY, randomInteger(0, calendar.getActualMaximum(Calendar.HOUR_OF_DAY)));
-		calendar.set(Calendar.MINUTE, randomInteger(0,60));
-		return calendar;
+		return LocalDateTime.of(randomInteger(2018,2020),randomInteger(1, 12), randomInteger(1,28), randomInteger(0,23), randomInteger(0,59) );
+
 	}
 
 	public static Appointment randomAppointment() throws ParseException
 	{
-		Calendar calendar = TestUtils.randomDate();
-		String date = APPOINTMENT_DATE_FORMAT.format(calendar.getTimeInMillis());
-		String time = APPOINTMENT_TIME_FORMAT.format(calendar.getTimeInMillis());
+		LocalDateTime localDateTime = TestUtils.randomDate();
+		String date = APPOINTMENT_DATE_FORMAT.format(localDateTime);
+		String time = APPOINTMENT_TIME_FORMAT.format(localDateTime);
 		return randomAppointment(date, time);
 	}
 
-	public static Appointment randomAppointment(String date, String time) throws ParseException
+	public static Appointment randomAppointment(String date, String time) throws DateTimeParseException
 	{
 		int duration = TestUtils.randomInteger(30,120);
 		return randomAppointment(date, time, duration);
 	}
 
-	public static Appointment randomAppointment(String date, String time, int duration) throws ParseException
+	public static Appointment randomAppointment(String date, String time, int duration) throws DateTimeParseException
 	{
 		String with = TestUtils.randomString(20);
 		String where = TestUtils.randomString(20);

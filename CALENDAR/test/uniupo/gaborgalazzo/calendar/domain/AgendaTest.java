@@ -2,8 +2,6 @@ package uniupo.gaborgalazzo.calendar.domain;
 
 import org.junit.Before;
 import org.junit.Test;
-import uniupo.gaborgalazzo.calendar.domain.Agenda;
-import uniupo.gaborgalazzo.calendar.domain.Appointment;
 import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
 import uniupo.gaborgalazzo.calendar.exception.ReadException;
 import uniupo.gaborgalazzo.calendar.utils.TestUtils;
@@ -14,8 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -44,7 +42,7 @@ public class AgendaTest
 		}
 
 
-		Date overlap = new Date(appointment.getDDate().getTime() + TestUtils.randomInteger(0, appointment.getDuration())*TimeUnit.MINUTES.toMillis(1));
+		LocalDateTime overlap = LocalDateTime.from(appointment.getDateTime()).plusMinutes(TimeUnit.MINUTES.toMillis( TestUtils.randomInteger(0, appointment.getDuration())));
 		Appointment collision = TestUtils.randomAppointment(APPOINTMENT_DATE_FORMAT.format(overlap), APPOINTMENT_TIME_FORMAT.format(overlap));
 		try
 		{
@@ -79,7 +77,7 @@ public class AgendaTest
 		Appointment appointment = TestUtils.randomAppointment();
 		agenda.add(appointment);
 		assertFalse(agenda.findByDate(appointment.getDate()).isEmpty());
-		Date different = new Date(appointment.getDDate().getTime() + TimeUnit.DAYS.toMillis(2));
+		LocalDateTime different = LocalDateTime.from(appointment.getDateTime()).plusDays(TimeUnit.DAYS.toMillis( 2));
 		assertTrue(agenda.findByWith(APPOINTMENT_DATE_FORMAT.format(different)).isEmpty());
 	}
 
@@ -144,6 +142,9 @@ public class AgendaTest
 		fileReader.close();
 		assertTrue(errors.size()>0);
 
+		for(ReadException exception: errors)
+			assertEquals(exception.getE().getClass() , AppointmentCollisionException.class);
+
 		fileReader = new FileReader("not_json_array.json");
 		try {
 
@@ -162,9 +163,6 @@ public class AgendaTest
 		errors = agenda.readAgenda(fileReader);
 		fileReader.close();
 		assertTrue(errors.size()>0);
-		for(ReadException exception: errors)
-			assertFalse(exception.getE() instanceof AppointmentCollisionException);
-
 
 		Files.delete(Paths.get(filename));
 	}

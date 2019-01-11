@@ -2,12 +2,12 @@ package uniupo.gaborgalazzo.calendar.domain;
 
 import org.junit.Before;
 import org.junit.Test;
-import uniupo.gaborgalazzo.calendar.domain.Appointment;
 import uniupo.gaborgalazzo.calendar.utils.TestUtils;
 
 import java.security.InvalidParameterException;
 import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ public class AppointmentTest
 	@Test
 	public void getDDate()
 	{
-		Date actual = appointment.getDDate();
+		LocalDateTime actual = appointment.getDateTime();
 		assertEquals(appointment.getDate(),APPOINTMENT_DATE_FORMAT.format(actual));
 		assertEquals(appointment.getTime(),APPOINTMENT_TIME_FORMAT.format(actual));
 	}
@@ -47,25 +47,25 @@ public class AppointmentTest
 		{
 			TestUtils.randomAppointment(TestUtils.randomString(), appointment.getTime());
 			fail();
-		} catch (ParseException ignored){}
+		} catch (DateTimeParseException ignored){}
 
 		try
 		{
 			TestUtils.randomAppointment("31-02-2018", appointment.getTime());
 			fail();
-		} catch (ParseException ignored){}
+		} catch (DateTimeParseException ignored){}
 
 		try
 		{
 			TestUtils.randomAppointment(TestUtils.randomInteger(31,100)+"-"+TestUtils.randomInteger(1,12)+"-"+TestUtils.randomInteger(2000,20010), appointment.getTime());
 			fail();
-		} catch (ParseException ignored){}
+		} catch (DateTimeParseException ignored){}
 
 		try
 		{
 			TestUtils.randomAppointment(TestUtils.randomInteger(0,28)+"-"+TestUtils.randomInteger(13,100)+"-"+TestUtils.randomInteger(2000,20010), appointment.getTime());
 			fail();
-		} catch (ParseException ignored){}
+		} catch (DateTimeParseException ignored){}
 
 
 	}
@@ -85,7 +85,7 @@ public class AppointmentTest
 		{
 			TestUtils.randomAppointment(appointment.getDate(), TestUtils.randomString());
 			fail();
-		} catch (ParseException ignored){}
+		} catch (DateTimeParseException ignored){}
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class AppointmentTest
 			int duration = TestUtils.randomInteger(1,120);
 			TestUtils.randomAppointment(appointment.getDate(), appointment.getTime(), -duration);
 			fail();
-		}catch (InvalidParameterException | ParseException e)
+		}catch (InvalidParameterException | DateTimeParseException e)
 		{
 			assertTrue(e instanceof InvalidParameterException);
 		}
@@ -115,17 +115,18 @@ public class AppointmentTest
 	@Test
 	public void compareTo() throws ParseException
 	{
-		String dateNext = APPOINTMENT_DATE_FORMAT.format(appointment.getDDate().getTime() + TimeUnit.DAYS.toMillis(2));
-		String datePrev = APPOINTMENT_DATE_FORMAT.format(appointment.getDDate().getTime() - TimeUnit.DAYS.toMillis(2));
+		String dateNext = APPOINTMENT_DATE_FORMAT.format(LocalDateTime.from(appointment.getDateTime()).plusDays(TimeUnit.DAYS.toMillis( 2)));
+		String datePrev = APPOINTMENT_DATE_FORMAT.format(LocalDateTime.from(appointment.getDateTime()).minusDays(TimeUnit.DAYS.toMillis( 2)));
 		Appointment aNext = TestUtils.randomAppointment(dateNext, appointment.getTime());
 		Appointment aPrev = TestUtils.randomAppointment(datePrev, appointment.getTime());
-		assertEquals(appointment.compareTo(aNext), appointment.getDDate().compareTo(aNext.getDDate()));
+		assertEquals(appointment.compareTo(aNext), appointment.getDateTime().compareTo(aNext.getDateTime()));
 		assertTrue(appointment.compareTo(aNext)<0);
-		assertEquals(appointment.compareTo(aPrev), appointment.getDDate().compareTo(aPrev.getDDate()));
+		assertEquals(appointment.compareTo(aPrev), appointment.getDateTime().compareTo(aPrev.getDateTime()));
 		assertTrue(appointment.compareTo(aPrev)>0);
-		assertEquals(appointment.compareTo(appointment), appointment.getDDate().compareTo(appointment.getDDate()));
+		assertEquals(appointment.compareTo(appointment), appointment.getDateTime().compareTo(appointment.getDateTime()));
 		assertTrue(appointment.compareTo(appointment) == 0);
 	}
+
 
 
 }

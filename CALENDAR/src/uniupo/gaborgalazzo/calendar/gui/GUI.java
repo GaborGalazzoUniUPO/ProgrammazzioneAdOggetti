@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,7 +137,7 @@ public class GUI
 			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
 			System.out.println();
 
-		}  catch (AppointmentCollisionException| ParseException e)
+		}  catch (AppointmentCollisionException| DateTimeParseException e)
 		{
 			try
 			{
@@ -269,7 +270,7 @@ public class GUI
 			System.out.println("APPOINTMENT ADDED SUCCESSFULLY!");
 			System.out.println();
 
-		} catch (ParseException | InvalidParameterException| AppointmentCollisionException e)
+		} catch (DateTimeParseException | InvalidParameterException| AppointmentCollisionException e)
 		{
 			handleError("Can't create appointment!", e);
 		}
