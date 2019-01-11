@@ -12,15 +12,28 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * The type Agenda.
+ */
 public class Agenda implements Serializable, Iterable<Appointment>
 {
 	private ArrayList<Appointment> appointments;
 
+	/**
+	 * Instantiates a new Agenda.
+	 */
 	public Agenda(){
 		appointments = new ArrayList<>();
 	}
 
 
+	/**
+	 * Add boolean.
+	 *
+	 * @param appointment the appointment
+	 * @return the boolean
+	 * @throws AppointmentCollisionException the appointment collision exception
+	 */
 	public boolean add(Appointment appointment) throws AppointmentCollisionException
 	{
 		Appointment collision = overlaps(appointment);
@@ -29,11 +42,23 @@ public class Agenda implements Serializable, Iterable<Appointment>
 		return appointments.add(appointment);
 	}
 
+	/**
+	 * Remove boolean.
+	 *
+	 * @param appointment the appointment
+	 * @return the boolean
+	 */
 	public boolean remove(Appointment appointment){
 		return appointments.remove(appointment);
 	}
 
 
+	/**
+	 * Find by with array list.
+	 *
+	 * @param with the with
+	 * @return the array list
+	 */
 	public ArrayList<Appointment> findByWith(String with){
 
 		return findByPredicate(
@@ -42,6 +67,12 @@ public class Agenda implements Serializable, Iterable<Appointment>
 				);
 	}
 
+	/**
+	 * Find by date array list.
+	 *
+	 * @param date the date
+	 * @return the array list
+	 */
 	public ArrayList<Appointment> findByDate(String date){
 
 		return findByPredicate(
@@ -50,6 +81,11 @@ public class Agenda implements Serializable, Iterable<Appointment>
 				);
 	}
 
+	/**
+	 * Get all array list.
+	 *
+	 * @return the array list
+	 */
 	public ArrayList<Appointment> getAll(){
 		return  appointments
 				.stream()
@@ -57,6 +93,12 @@ public class Agenda implements Serializable, Iterable<Appointment>
 				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
 	}
 
+	/**
+	 * Find by predicate array list.
+	 *
+	 * @param predicate the predicate
+	 * @return the array list
+	 */
 	public ArrayList<Appointment> findByPredicate(Predicate<Appointment> predicate){
 		return appointments
 				.stream()
@@ -76,6 +118,12 @@ public class Agenda implements Serializable, Iterable<Appointment>
 		return null;
 	}
 
+	/**
+	 * Write agenda.
+	 *
+	 * @param writer the writer
+	 * @throws IOException the io exception
+	 */
 	public void writeAgenda(Writer writer) throws IOException
 	{
 		GsonBuilder builder = new GsonBuilder();
@@ -84,6 +132,13 @@ public class Agenda implements Serializable, Iterable<Appointment>
 		writer.write(gson.toJson(appointments));
 	}
 
+	/**
+	 * Read agenda array list.
+	 *
+	 * @param reader the reader
+	 * @return the array list
+	 * @throws IllegalStateException the illegal state exception
+	 */
 	public ArrayList<ReadException> readAgenda(Reader reader) throws IllegalStateException{
 		// Read from File to String
 		ArrayList<ReadException> exceptions = new ArrayList<ReadException>();
@@ -113,6 +168,8 @@ public class Agenda implements Serializable, Iterable<Appointment>
 	{
 		return getAll().iterator();
 	}
+
+
 
 
 }
