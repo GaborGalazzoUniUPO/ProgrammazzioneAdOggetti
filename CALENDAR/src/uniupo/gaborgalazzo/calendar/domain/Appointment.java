@@ -1,6 +1,7 @@
 package uniupo.gaborgalazzo.calendar.domain;
 
 
+import com.google.gson.JsonObject;
 import com.sun.istack.internal.NotNull;
 
 import java.io.Serializable;
@@ -20,8 +21,9 @@ import java.util.Objects;
  * @author Gabor Galazzo
  * @version 1.0.0
  */
-public class Appointment implements Comparable<Appointment>, Serializable
+public class Appointment implements Comparable<Appointment>
 {
+
 	private final String date;
 	private final String time;
 	private final int duration;

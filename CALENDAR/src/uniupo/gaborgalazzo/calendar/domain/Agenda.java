@@ -1,21 +1,31 @@
 package uniupo.gaborgalazzo.calendar.domain;
 
 import com.google.gson.*;
-import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
-import uniupo.gaborgalazzo.calendar.exception.ReadException;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentOverlapException;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentJsonParsingException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * The type Agenda.
+ * The type Agenda. <br/> This object allow you to manage {@link Appointment} by adding them, removing them and
+ * searching for them.<br/>
+ *
+ * @author Gabor Galazzo
+ * @version 1.0.0
+ * @see Iterable
+ * @see Appointment
  */
-public class Agenda implements Serializable, Iterable<Appointment>
+public class Agenda implements Iterable<Appointment>
 {
 	private ArrayList<Appointment> appointments;
 
@@ -28,25 +38,26 @@ public class Agenda implements Serializable, Iterable<Appointment>
 
 
 	/**
-	 * Add boolean.
+	 * Add boolean an appointment.
 	 *
-	 * @param appointment the appointment
-	 * @return the boolean
-	 * @throws AppointmentCollisionException the appointment collision exception
+	 * @param appointment the new appointment to add
+	 * @return {@link List#add(Object)}
+	 * @throws AppointmentOverlapException the new appointment overlap an existing appointment
+	 * @see #overlaps(Appointment) #overlaps(Appointment)
 	 */
-	public boolean add(Appointment appointment) throws AppointmentCollisionException
+	public boolean add(Appointment appointment) throws AppointmentOverlapException
 	{
 		Appointment collision = overlaps(appointment);
 		if(collision!=null)
-			throw new AppointmentCollisionException(collision);
+			throw new AppointmentOverlapException(collision);
 		return appointments.add(appointment);
 	}
 
 	/**
-	 * Remove boolean.
+	 * Remove an appointment
 	 *
-	 * @param appointment the appointment
-	 * @return the boolean
+	 * @param appointment the appointment to remove
+	 * @return {@link List#remove(Object)}
 	 */
 	public boolean remove(Appointment appointment){
 		return appointments.remove(appointment);
@@ -54,10 +65,12 @@ public class Agenda implements Serializable, Iterable<Appointment>
 
 
 	/**
-	 * Find by with array list.
+	 * Find all appointment containing a determinate string in their {@link Appointment#with}.
 	 *
-	 * @param with the with
-	 * @return the array list
+	 * @param with the string to search
+	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} that containing the determinate
+	 * 		string in their {@link Appointment#with}.
+	 * @see #findByPredicate(Predicate) #findByPredicate(Predicate)
 	 */
 	public ArrayList<Appointment> findByWith(String with){
 
@@ -68,10 +81,12 @@ public class Agenda implements Serializable, Iterable<Appointment>
 	}
 
 	/**
-	 * Find by date array list.
+	 * Find all appointment of a determinate date. <br/> this method doesn't check date's format because it use {@link
+	 * Appointment#getDate()#equals(Object)}
 	 *
 	 * @param date the date
-	 * @return the array list
+	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} of the specified date.
+	 * @see #findByPredicate(Predicate) #findByPredicate(Predicate)
 	 */
 	public ArrayList<Appointment> findByDate(String date){
 
@@ -82,9 +97,10 @@ public class Agenda implements Serializable, Iterable<Appointment>
 	}
 
 	/**
-	 * Get all array list.
+	 * Get all appointments sorted by date using {@link Stream}.
 	 *
-	 * @return the array list
+	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} sorted by date.
+	 * @see Stream
 	 */
 	public ArrayList<Appointment> getAll(){
 		return  appointments
@@ -94,10 +110,12 @@ public class Agenda implements Serializable, Iterable<Appointment>
 	}
 
 	/**
-	 * Find by predicate array list.
+	 * Find all appointment matching a determinate {@link Predicate}.
 	 *
 	 * @param predicate the predicate
-	 * @return the array list
+	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} matching the determinate predicate.
+	 * @see Predicate
+	 * @see Stream#filter(Predicate) Stream#filter(Predicate)
 	 */
 	public ArrayList<Appointment> findByPredicate(Predicate<Appointment> predicate){
 		return appointments
@@ -108,7 +126,15 @@ public class Agenda implements Serializable, Iterable<Appointment>
 				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
 	}
 
-	private Appointment overlaps(Appointment appointment)
+	/**
+	 * Check if an appointment period overlaps an appointment period present in this agenda <br/> An appointment period
+	 * start at their {@link Appointment#date} and their {@link Appointment#time} and end after {@link
+	 * Appointment#duration} minutes
+	 *
+	 * @param appointment the appointment to check
+	 * @return the appointment that overlaps the appointment to check, null if there are no overlaps
+	 */
+	public Appointment overlaps(Appointment appointment)
 	{
 		for(Appointment a: appointments){
 			LocalDateTime aDateEnd = LocalDateTime.from(a.getDateTime()).plusMinutes(TimeUnit.MINUTES.toMillis(a.getDuration()));
@@ -119,10 +145,10 @@ public class Agenda implements Serializable, Iterable<Appointment>
 	}
 
 	/**
-	 * Write agenda.
+	 * Write all appointments in a writer as a {@link JsonArray}
 	 *
 	 * @param writer the writer
-	 * @throws IOException the io exception
+	 * @throws IOException writer IO errors on write
 	 */
 	public void writeAgenda(Writer writer) throws IOException
 	{
@@ -132,16 +158,20 @@ public class Agenda implements Serializable, Iterable<Appointment>
 		writer.write(gson.toJson(appointments));
 	}
 
+
 	/**
-	 * Read agenda array list.
+	 * Try to add all appointment from a reader. <br/> The source reader must contain an array of {@link Appointment} in
+	 * Json format.
 	 *
 	 * @param reader the reader
-	 * @return the array list
-	 * @throws IllegalStateException the illegal state exception
+	 * @return an {@link ArrayList< AppointmentJsonParsingException >} containing all Exceptions occurred during the
+	 * 		loading process
+	 * @throws IllegalStateException caused by a json parsing exception of the reader
+	 * @see AppointmentJsonParsingException
 	 */
-	public ArrayList<ReadException> readAgenda(Reader reader) throws IllegalStateException{
+	public ArrayList<AppointmentJsonParsingException> readAgenda(Reader reader) throws IllegalStateException{
 		// Read from File to String
-		ArrayList<ReadException> exceptions = new ArrayList<ReadException>();
+		ArrayList<AppointmentJsonParsingException> exceptions = new ArrayList<AppointmentJsonParsingException>();
 		JsonParser parser = new JsonParser();
 		JsonElement jsonElement = parser.parse(reader);
 		JsonArray jsonArray = jsonElement.getAsJsonArray();
@@ -156,11 +186,12 @@ public class Agenda implements Serializable, Iterable<Appointment>
 				Appointment appointment = new Appointment(date, time, duration, with, where);
 				add(appointment);
 			} catch (Exception e) {
-				exceptions.add(new ReadException(jsonObject, e));
+				exceptions.add(new AppointmentJsonParsingException(element, e));
 			}
 		}
 		return exceptions;
 	}
+
 
 
 	@Override

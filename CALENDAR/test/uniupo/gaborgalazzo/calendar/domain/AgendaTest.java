@@ -2,8 +2,8 @@ package uniupo.gaborgalazzo.calendar.domain;
 
 import org.junit.Before;
 import org.junit.Test;
-import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
-import uniupo.gaborgalazzo.calendar.exception.ReadException;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentOverlapException;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentJsonParsingException;
 import uniupo.gaborgalazzo.calendar.utils.TestUtils;
 
 import java.io.FileReader;
@@ -36,7 +36,7 @@ public class AgendaTest
 		try
 		{
 			assertTrue(agenda.add(appointment));
-		} catch (AppointmentCollisionException e)
+		} catch (AppointmentOverlapException e)
 		{
 			fail();
 		}
@@ -48,13 +48,13 @@ public class AgendaTest
 		{
 			agenda.add(collision);
 			fail();
-		} catch (AppointmentCollisionException e){
+		} catch (AppointmentOverlapException e){
 			assertEquals(appointment, e.getAppointment());
 		}
 	}
 
 	@Test
-	public void remove() throws ParseException, AppointmentCollisionException
+	public void remove() throws ParseException, AppointmentOverlapException
 	{
 		Appointment appointment = TestUtils.randomAppointment();
 		agenda.add(appointment);
@@ -63,7 +63,7 @@ public class AgendaTest
 	}
 
 	@Test
-	public void findByWith() throws ParseException, AppointmentCollisionException
+	public void findByWith() throws ParseException, AppointmentOverlapException
 	{
 		Appointment appointment = TestUtils.randomAppointment();
 		agenda.add(appointment);
@@ -72,7 +72,7 @@ public class AgendaTest
 	}
 
 	@Test
-	public void findByDate() throws ParseException, AppointmentCollisionException
+	public void findByDate() throws ParseException, AppointmentOverlapException
 	{
 		Appointment appointment = TestUtils.randomAppointment();
 		agenda.add(appointment);
@@ -89,7 +89,7 @@ public class AgendaTest
 			try
 			{
 				agenda.add(appointment);
-			} catch (AppointmentCollisionException ignored){}
+			} catch (AppointmentOverlapException ignored){}
 		}
 
 		Appointment prev = null;
@@ -112,7 +112,7 @@ public class AgendaTest
 			try
 			{
 				agenda.add(appointment);
-			} catch (AppointmentCollisionException ignored){}
+			} catch (AppointmentOverlapException ignored){}
 		}
 
 		ArrayList<Appointment> oldData = agenda.getAll();
@@ -131,7 +131,7 @@ public class AgendaTest
 
 
 		FileReader fileReader = new FileReader(filename);
-		ArrayList<ReadException> errors = agenda.readAgenda(fileReader);
+		ArrayList<AppointmentJsonParsingException> errors = agenda.readAgenda(fileReader);
 		fileReader.close();
 
 		assertTrue(errors.isEmpty());
@@ -142,8 +142,8 @@ public class AgendaTest
 		fileReader.close();
 		assertTrue(errors.size()>0);
 
-		for(ReadException exception: errors)
-			assertEquals(exception.getE().getClass() , AppointmentCollisionException.class);
+		for(AppointmentJsonParsingException exception: errors)
+			assertEquals(exception.getException().getClass() , AppointmentOverlapException.class);
 
 		fileReader = new FileReader("not_json_array.json");
 		try {

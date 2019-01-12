@@ -1,38 +1,78 @@
 package uniupo.gaborgalazzo.rogue.model.elements;
 
+/**
+ * The type Element.
+ */
 public abstract class Element {
 
     private int x;
     private int y;
     private int room;
 
-    public Element(int room, int x, int y){
+	/**
+	 * Instantiates a new Element.
+	 *
+	 * @param room the room
+	 * @param x    the x
+	 * @param y    the y
+	 */
+	public Element(int room, int x, int y){
         this.room = room;
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+	/**
+	 * Gets x.
+	 *
+	 * @return the x
+	 */
+	public int getX() {
         return x;
     }
 
-    public void setX(int x) {
+	/**
+	 * Sets x.
+	 *
+	 * @param x the x
+	 */
+	public void setX(int x) {
         this.x = x;
     }
 
-    public int getY() {
+	/**
+	 * Gets y.
+	 *
+	 * @return the y
+	 */
+	public int getY() {
         return y;
     }
 
-    public void setY(int y) {
+	/**
+	 * Sets y.
+	 *
+	 * @param y the y
+	 */
+	public void setY(int y) {
         this.y = y;
     }
 
-    public int getRoom() {
+	/**
+	 * Gets room.
+	 *
+	 * @return the room
+	 */
+	public int getRoom() {
         return room;
     }
 
-    public void setRoom(int room) {
+	/**
+	 * Sets room.
+	 *
+	 * @param room the room
+	 */
+	public void setRoom(int room) {
         this.room = room;
     }
 }

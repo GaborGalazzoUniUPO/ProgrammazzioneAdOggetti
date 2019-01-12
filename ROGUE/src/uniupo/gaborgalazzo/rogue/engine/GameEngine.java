@@ -6,6 +6,9 @@ import uniupo.gaborgalazzo.rogue.model.Prison;
 
 import java.util.ArrayList;
 
+/**
+ * The type Game engine.
+ */
 public class GameEngine {
 
     private Prison prison;
@@ -13,15 +16,29 @@ public class GameEngine {
     private ArrayList<Monster> monsters;
     private int time;
 
-    public static Prison genPrison(){
+	/**
+	 * Gen prison prison.
+	 *
+	 * @return the prison
+	 */
+	public static Prison genPrison(){
         return null;
     }
 
-    public static Prison genPrison(String s){
+	/**
+	 * Gen prison prison.
+	 *
+	 * @param s the s
+	 * @return the prison
+	 */
+	public static Prison genPrison(String s){
         return null;
     }
 
-    public void tick(){
+	/**
+	 * Tick.
+	 */
+	public void tick(){
         time++;
         for (Monster m : monsters) {
            //TODO: move m
@@ -35,7 +52,12 @@ public class GameEngine {
         //TODO: move player
     }
 
-    public boolean isGameEnd(){
+	/**
+	 * Is game end boolean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isGameEnd(){
         //TODO: player.isDead() || player has reached exit
         return false;
     }

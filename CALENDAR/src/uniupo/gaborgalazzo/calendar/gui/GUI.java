@@ -2,14 +2,13 @@ package uniupo.gaborgalazzo.calendar.gui;
 
 import uniupo.gaborgalazzo.calendar.domain.Agenda;
 import uniupo.gaborgalazzo.calendar.domain.Appointment;
-import uniupo.gaborgalazzo.calendar.exception.AppointmentCollisionException;
-import uniupo.gaborgalazzo.calendar.exception.ReadException;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentOverlapException;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentJsonParsingException;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.text.ParseException;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,12 +136,12 @@ public class GUI
 			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
 			System.out.println();
 
-		}  catch (AppointmentCollisionException| DateTimeParseException e)
+		}  catch (AppointmentOverlapException | DateTimeParseException e)
 		{
 			try
 			{
 				agenda.add(old);
-			} catch (AppointmentCollisionException e1)
+			} catch (AppointmentOverlapException e1)
 			{
 				throw new RuntimeException(e1);
 			}
@@ -163,13 +162,13 @@ public class GUI
 		try
 		{
 			FileReader fileReader = new FileReader(filename);
-			ArrayList<ReadException> errors = agenda.readAgenda(fileReader);
+			ArrayList<AppointmentJsonParsingException> errors = agenda.readAgenda(fileReader);
 			fileReader.close();
 			if(errors.size() == 0)
 				System.out.println("APPOINTMENT LOADED SUCCESSFULLY from "+filename+"!");
 			else{
 				System.out.println("ERRORS: "+errors.size());
-				for(ReadException error: errors){
+				for(AppointmentJsonParsingException error: errors){
 					System.out.println("_____________________________");
 					System.out.println(error.getMessage());
 					System.out.println("_____________________________");
@@ -270,7 +269,7 @@ public class GUI
 			System.out.println("APPOINTMENT ADDED SUCCESSFULLY!");
 			System.out.println();
 
-		} catch (DateTimeParseException | InvalidParameterException| AppointmentCollisionException e)
+		} catch (DateTimeParseException | InvalidParameterException| AppointmentOverlapException e)
 		{
 			handleError("Can't create appointment!", e);
 		}
