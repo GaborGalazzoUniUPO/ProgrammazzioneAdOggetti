@@ -17,9 +17,9 @@ public class AppointmentParsingException extends Exception{
      * Instantiates a new AppointmentParsingException.
      *
      * @param source the json element source
-     * @param exception           the exception thrown
+     * @param exception  the exception thrown
      */
-    public AppointmentParsingException(JsonElement source, Exception exception) {
+    public AppointmentParsingException(Object source, Exception exception) {
         this.source = source;
         this.exception = exception;
     }
