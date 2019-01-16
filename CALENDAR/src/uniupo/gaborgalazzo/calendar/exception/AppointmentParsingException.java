@@ -25,7 +25,7 @@ public class AppointmentParsingException extends Exception{
     }
 
     public String getMessage(){
-        return "Cannot load:\n"+source+"\nBecause:\n"+ exception.getMessage();
+        return "Cannot load:\n"+source+"\nBecause:\n"+ exception;
     }
 
     /**
