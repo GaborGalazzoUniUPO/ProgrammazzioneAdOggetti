@@ -1,10 +1,8 @@
 package uniupo.gaborgalazzo.calendar.domain;
 
 
-import com.google.gson.JsonObject;
 import com.sun.istack.internal.NotNull;
 
-import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +14,7 @@ import java.util.Objects;
 
 /**
  * The type Appointment.
- * <br/>
+ * <br>
  * All fields of this class are finals, so they cannot be modified.
  * @author Gabor Galazzo
  * @version 1.0.0
@@ -32,15 +30,15 @@ public class Appointment implements Comparable<Appointment>
 
 	/**
 	 * The constant APPOINTMENT_DATE_FORMAT.
-	 * <br/>
-	 * Used to check correct format for date string to store.<br/><br/>
+	 * <br>
+	 * Used to check correct format for date string to store.<br><br>
 	 * <b>Format: dd-MM-uuuu</b>
 	 */
 	public static final DateTimeFormatter APPOINTMENT_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-uuuu").withResolverStyle(ResolverStyle.STRICT);
 	/**
 	 * The constant APPOINTMENT_TIME_FORMAT.
-	 * <br/>
-	 * Used to check correct format for time string to store.<br/><br/>
+	 * <br>
+	 * Used to check correct format for time string to store.<br><br>
 	 * <b>Format: HH-mm</b>
 	 */
 	public static final DateTimeFormatter APPOINTMENT_TIME_FORMAT = DateTimeFormatter.ofPattern("HH-mm").withResolverStyle(ResolverStyle.STRICT);

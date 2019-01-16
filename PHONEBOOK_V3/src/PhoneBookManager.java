@@ -23,7 +23,7 @@ public class PhoneBookManager {
      * Create a PhoneBook and add it to the List
      * @param phoneBookName new phoneBook's name
      * @param dimension the phoneBook's max size
-     * @return  -1: PhoneBook with that name exists<br/>
+     * @return  -1: PhoneBook with that name exists<br>
      *          1: PhoneBook created and added
      */
     public static int create(String phoneBookName, int dimension){
@@ -38,7 +38,7 @@ public class PhoneBookManager {
     /**
      * Remove a phoneBook from phoneBookList
      * @param phoneBookName name of the phoneBook to remove
-     * @return  1: PhoneBook removed<br/>
+     * @return  1: PhoneBook removed<br>
      *          -1: phoneBookName not found
      */
     public static int delete(String phoneBookName){
@@ -49,7 +49,7 @@ public class PhoneBookManager {
      * Add contact to the phoneBook with phoneBookName name
      * @param phoneBookName name of the phoneBook
      * @param contact contact to add
-     * @return  -3: phoneBookName not found<br/>
+     * @return  -3: phoneBookName not found<br>
      *          See also {@link PhoneBook#add(String)}
      *
      */
@@ -64,7 +64,7 @@ public class PhoneBookManager {
      * Find prefix in phoneBook with phoneBookName name
      * @param phoneBookName name of the phoneBook
      * @param prefix needle to find
-     * @return  null: phoneBookName not found<br/>
+     * @return  null: phoneBookName not found<br>
      *          See also {@link PhoneBook#findByName(String)}
      */
     public static ArrayList<Contact> find(String phoneBookName, String prefix){
@@ -77,7 +77,7 @@ public class PhoneBookManager {
     /**
      * Stringify a phoneBook
      * @param phoneBookName name of the phoneBook
-     * @return  "": phoneBookName not found<br/>
+     * @return  "": phoneBookName not found<br>
      *          See also {@link PhoneBook#toString()}
      */
     public static String toString(String phoneBookName){
@@ -90,7 +90,7 @@ public class PhoneBookManager {
     /**
      * Return the phoneBook with phoneBookName name size
      * @param phoneBookName name of the phoneBook
-     * @return  -1: phoneBookName not found<br/>
+     * @return  -1: phoneBookName not found<br>
      *          See also {@link PhoneBook#size()}
      */
     public static int size(String phoneBookName){

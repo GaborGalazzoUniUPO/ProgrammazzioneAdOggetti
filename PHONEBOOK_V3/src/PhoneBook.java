@@ -38,9 +38,9 @@ public class PhoneBook {
     /**
      * Add an element to <b>phoneBook</b>
      * @param c The element to add
-     * @return 1: Added Correctly <br/>
-     * 0: Duplicate found: NOT ADDED <br/>
-     * -1: MAX_SIZE achieved: NOT ADDED <br/>
+     * @return 1: Added Correctly <br>
+     * 0: Duplicate found: NOT ADDED <br>
+     * -1: MAX_SIZE achieved: NOT ADDED <br>
      */
     public int add(Contact c) {
         if (phoneBook.size() == MAX_SIZE)

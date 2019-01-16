@@ -1,0 +1,39 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<h1>Agenda - Object Oriented Programming</h1>
+<h3>Gabor Galazzo (20024195) A.A. 2018-2019 - DiSIT - UniUPO</h3>
+<p>Agenda &egrave; un applicativo per gestire appuntamenti caratterizzati da <strong>data, ora, durata, dove e quando</strong>.</p>
+<h3><span style="color: #0000ff;"><span style="color: #0000ff;"><span style="color: #0000ff;"><span style="color: #0000ff;">Scelte progettuali:</span></span></span></span></h3>
+<h4>{@link uniupo.gaborgalazzo.calendar.domain.Appointment}:</h4>
+<p style="padding-left: 30px;">Al fine di gestire il corretto formato dei campi {@link uniupo.gaborgalazzo.calendar.domain.Appointment#date} e {@link uniupo.gaborgalazzo.calendar.domain.Appointment#time} sono state introdotte due costanti statiche di tipo {@link java.time.format.DateTimeFormatter}:</p>
+<ul>
+	<li style="padding-left: 60px;">{@link uniupo.gaborgalazzo.calendar.domain.Appointment#APPOINTMENT_DATE_FORMAT}</li>
+	<li style="padding-left: 60px;">{@link uniupo.gaborgalazzo.calendar.domain.Appointment#APPOINTMENT_TIME_FORMAT}</li>
+</ul>
+<p style="padding-left: 30px;">Tutti i campi di questa classe sono immutabili al fine di prevenire eventuali errori di incapsulamento che porterebbero ad una scorretta alterazione di un appuntamento causando una situazione di incoerenza difficilmente gestibile da {@link uniupo.gaborgalazzo.calendar.domain.Agenda}</p>
+<p style="padding-left: 30px;">Il metodo {@link uniupo.gaborgalazzo.calendar.domain.Appointment#getDateTime()} &egrave; stato introdotto per agevolare le operazioni sulle date.</p>
+<p><strong>{@link uniupo.gaborgalazzo.calendar.domain.Agenda}:</strong></p>
+<p style="padding-left: 30px;">Questa classe permette di gestire e manipolare una lista di appuntamenti. All'interno dell'agenda non ci possono essere due o pi&ugrave; appuntamenti che collidono, ovvero gi&agrave; definiti per quello stesso orario, tenendo anche conto della durata.</p>
+<p style="padding-left: 30px;">Per modificare un appuntamento bisogna passare per l'agenda che lo contiene in modo tale da evitare che le modifiche possano creare un agenda inconsistente sui suoi vincoli.</p>
+<p style="padding-left: 30px;">Si considerino i metodi {@link uniupo.gaborgalazzo.calendar.domain.Agenda#findByDate(String)} e {@link uniupo.gaborgalazzo.calendar.domain.Agenda#findByWith(String)} delle agevolazioni di {@link uniupo.gaborgalazzo.calendar.domain.Agenda#findByPredicate(Predicate)}</p>
+<p style="padding-left: 30px;">Il metodo {@link uniupo.gaborgalazzo.calendar.domain.Agenda#writeAgenda(Writer)} sfrutta la libreria {@link com.google.gson.Gson} per serializzare {@link uniupo.gaborgalazzo.calendar.domain.Agenda#appointments} in formato Json.</p>
+<p style="padding-left: 30px;">Il metodo {@link uniupo.gaborgalazzo.calendar.domain.Agenda#readAgenda(Reader)} sfrutta la libreria {@link com.google.gson.Gson} per deserializzare un array Json, ne verifica l'integrit&agrave;, ed ogni errore che si verifica in fase di parsing di un singolo appuntamento (non dell'intero stream) viene incapsulato in un oggetto di tipo {@link AppointmentParsingException} che, in questo caso, non viene utilizzato come eccezzione, ma come bean.</p>
+<p><strong>{@link uniupo.gaborgalazzo.calendar.exception.AppointmentParsingException}:</strong></p>
+<p style="padding-left: 30px;">Anche se non &egrave; mai stata utilizzata come tale questa classe estende {@link java.lang.Exception}. E' stata progettata in previsione di un utilizzo concreto: nel caso in cui gli errori di parsing diventino pi&ugrave; freqenti e si richiede una gestione diretta di essi.</p>
+<p><strong>{@link uniupo.gaborgalazzo.calendar.gui.GUI}:</strong></p>
+<p style="padding-left: 30px;">Questa classe fa da interfaccia verso l'agenda per l'utente. Permette l'aggiunta, rimozione e manipolazione degli appuntamenti. Fornisce strumenti di ricerca.</p>
+<h3><span style="color: #0000ff;">Test:</span></h3>
+<p style="padding-left: 30px;">Per ogni metodo richiesto che dovesse soddifare dei requisiti specifici presenti nella consegna sono stati creati dei test.</p>
+<p style="padding-left: 30px;">Per ogni classe si effettuano i test di tutti i metodi richiesti o di di quelli a supoorto del funzionamento di quelli richiesti.</p>
+<p style="padding-left: 30px;">Tutti i test, tranne quelli relativi all'I/O da file, sono stati effettuati generando dati casuali, al fine di garantire l'integrit&agrave; dei test.</p>
+<p style="padding-left: 30px;">&nbsp;</p>
+<p style="padding-left: 30px;">&nbsp;</p>
+</body>
+</html>

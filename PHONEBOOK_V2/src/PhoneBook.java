@@ -38,9 +38,9 @@ public class PhoneBook {
     /**
      * Add an element to <b>phoneBook</b>
      * @param s The element to add
-     * @return 1: Added Correctly <br/>
-     * 0: Duplicate found: NOT ADDED <br/>
-     * -1: MAX_SIZE achieved: NOT ADDED <br/>
+     * @return 1: Added Correctly <br>
+     * 0: Duplicate found: NOT ADDED <br>
+     * -1: MAX_SIZE achieved: NOT ADDED <br>
      * -2: Invalid Element: NOT ADDED -> {@link #isValid(String)}
      */
     public int add(String s) {

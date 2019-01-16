@@ -1,24 +1,26 @@
 package uniupo.gaborgalazzo.calendar.domain;
 
 import com.google.gson.*;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentParsingException;
 import uniupo.gaborgalazzo.calendar.exception.AppointmentOverlapException;
-import uniupo.gaborgalazzo.calendar.exception.AppointmentJsonParsingException;
 
+import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The type Agenda. <br/> This object allow you to manage {@link Appointment} by adding them, removing them and
- * searching for them.<br/>
+ * The type Agenda. <br> This object allow you to manage {@link Appointment} by adding them, removing them and
+ * searching for them.<br>
  *
  * @author Gabor Galazzo
  * @version 1.0.0
@@ -63,12 +65,52 @@ public class Agenda implements Iterable<Appointment>
 		return appointments.remove(appointment);
 	}
 
+	/**
+	 * Allow you to edit an appointment in this agenda
+	 *
+	 * @param old appointment to edit
+	 * @param date new date
+	 * @param time new time
+	 * @param duration new duration
+	 * @param with new with
+	 * @param where new where
+	 * @return the edited appointment, null if {@link #add(Appointment)} returns false
+	 * @throws AppointmentOverlapException the new appointment overlap an existing one
+	 * @throws DateTimeParseException date or time string has an invalid format
+	 * @throws InvalidParameterException duration is invalid
+	 * @throws InstanceNotFoundException old appointment not found in agenda
+	 * @see Appointment#Appointment(String, String, int, String, String)
+	 */
+	public Appointment edit(Appointment old, String date, String time, int duration, String with, String where) throws AppointmentOverlapException, DateTimeParseException, InvalidParameterException, InstanceNotFoundException
+	{
+		if(!appointments.contains(old))
+			throw new InstanceNotFoundException();
+		remove(old);
+		Appointment appointment = new Appointment(date, time, duration, with, where);
+		try
+		{
+			if(add(appointment))
+				return appointment;
+			throw new RuntimeException("Add failed during appointment edit");
+		} catch (AppointmentOverlapException e)
+		{
+			try
+			{
+				add(old);
+			} catch (AppointmentOverlapException e1)
+			{
+				throw new RuntimeException(e1);
+			}
+			throw e;
+		}
+	}
+
 
 	/**
 	 * Find all appointment containing a determinate string in their {@link Appointment#with}.
 	 *
 	 * @param with the string to search
-	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} that containing the determinate
+	 * @return an {@link ArrayList} containing all {@link Appointment} that containing the determinate
 	 * 		string in their {@link Appointment#with}.
 	 * @see #findByPredicate(Predicate) #findByPredicate(Predicate)
 	 */
@@ -81,11 +123,11 @@ public class Agenda implements Iterable<Appointment>
 	}
 
 	/**
-	 * Find all appointment of a determinate date. <br/> this method doesn't check date's format because it use {@link
-	 * Appointment#getDate()#equals(Object)}
+	 * Find all appointment of a determinate date. <br> this method doesn't check date's format because it use {@link
+	 * Appointment#getDate()} equals
 	 *
 	 * @param date the date
-	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} of the specified date.
+	 * @return an {@link ArrayList} containing all {@link Appointment} of the specified date.
 	 * @see #findByPredicate(Predicate) #findByPredicate(Predicate)
 	 */
 	public ArrayList<Appointment> findByDate(String date){
@@ -99,21 +141,21 @@ public class Agenda implements Iterable<Appointment>
 	/**
 	 * Get all appointments sorted by date using {@link Stream}.
 	 *
-	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} sorted by date.
+	 * @return an {@link ArrayList} containing all {@link Appointment} sorted by date.
 	 * @see Stream
 	 */
 	public ArrayList<Appointment> getAll(){
 		return  appointments
 				.stream()
 				.sorted()
-				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**
 	 * Find all appointment matching a determinate {@link Predicate}.
 	 *
 	 * @param predicate the predicate
-	 * @return an {@link ArrayList<Appointment>} containing all {@link Appointment} matching the determinate predicate.
+	 * @return an {@link ArrayList} containing all {@link Appointment} matching the determinate predicate.
 	 * @see Predicate
 	 * @see Stream#filter(Predicate) Stream#filter(Predicate)
 	 */
@@ -123,11 +165,11 @@ public class Agenda implements Iterable<Appointment>
 				.filter(
 						predicate
 				)
-				.collect(Collectors.toCollection(ArrayList<Appointment>::new));
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**
-	 * Check if an appointment period overlaps an appointment period present in this agenda <br/> An appointment period
+	 * Check if an appointment period overlaps an appointment period present in this agenda <br> An appointment period
 	 * start at their {@link Appointment#date} and their {@link Appointment#time} and end after {@link
 	 * Appointment#duration} minutes
 	 *
@@ -137,7 +179,7 @@ public class Agenda implements Iterable<Appointment>
 	public Appointment overlaps(Appointment appointment)
 	{
 		for(Appointment a: appointments){
-			LocalDateTime aDateEnd = LocalDateTime.from(a.getDateTime()).plusMinutes(TimeUnit.MINUTES.toMillis(a.getDuration()));
+			LocalDateTime aDateEnd = LocalDateTime.from(a.getDateTime()).plusMinutes(a.getDuration());
 			if(appointment.getDateTime().isBefore(aDateEnd) && (appointment.getDateTime().isAfter(a.getDateTime()) || appointment.getDateTime().isEqual(a.getDateTime())))
 				return a;
 		}
@@ -160,24 +202,24 @@ public class Agenda implements Iterable<Appointment>
 
 
 	/**
-	 * Try to add all appointment from a reader. <br/> The source reader must contain an array of {@link Appointment} in
+	 * Try to add all appointment from a reader. <br> The source reader must contain an array of {@link Appointment} in
 	 * Json format.
 	 *
 	 * @param reader the reader
-	 * @return an {@link ArrayList< AppointmentJsonParsingException >} containing all Exceptions occurred during the
+	 * @return an {@link ArrayList} containing all Exceptions occurred during the
 	 * 		loading process
 	 * @throws IllegalStateException caused by a json parsing exception of the reader
-	 * @see AppointmentJsonParsingException
+	 * @see AppointmentParsingException
 	 */
-	public ArrayList<AppointmentJsonParsingException> readAgenda(Reader reader) throws IllegalStateException{
+	public ArrayList<AppointmentParsingException> readAgenda(Reader reader) throws IllegalStateException{
 		// Read from File to String
-		ArrayList<AppointmentJsonParsingException> exceptions = new ArrayList<AppointmentJsonParsingException>();
+		ArrayList<AppointmentParsingException> exceptions = new ArrayList<AppointmentParsingException>();
 		JsonParser parser = new JsonParser();
 		JsonElement jsonElement = parser.parse(reader);
 		JsonArray jsonArray = jsonElement.getAsJsonArray();
 		for(JsonElement element: jsonArray){
-			JsonObject jsonObject = element.getAsJsonObject();
 			try {
+				JsonObject jsonObject = element.getAsJsonObject();
 				String date = jsonObject.get("date").getAsString();
 				String time = jsonObject.get("time").getAsString();
 				int duration = jsonObject.get("duration").getAsInt();
@@ -186,7 +228,7 @@ public class Agenda implements Iterable<Appointment>
 				Appointment appointment = new Appointment(date, time, duration, with, where);
 				add(appointment);
 			} catch (Exception e) {
-				exceptions.add(new AppointmentJsonParsingException(element, e));
+				exceptions.add(new AppointmentParsingException(element, e));
 			}
 		}
 		return exceptions;
@@ -199,6 +241,8 @@ public class Agenda implements Iterable<Appointment>
 	{
 		return getAll().iterator();
 	}
+
+
 
 
 

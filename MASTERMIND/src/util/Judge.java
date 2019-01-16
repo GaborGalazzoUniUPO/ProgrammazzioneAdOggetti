@@ -44,8 +44,8 @@ public class Judge {
      * Check the bulls of guess based on target
      * @param guess
      * @param target
-     * @return  -1: invalid guess. See: {@link #validateString(String)} <br/>
-     *          -2: invalid target. See: {@link #validateString(String)}  <br/>
+     * @return  -1: invalid guess. See: {@link #validateString(String)} <br>
+     *          -2: invalid target. See: {@link #validateString(String)}  <br>
      *          n: Number of bulls in guess based on target
      */
     public static int numBulls(String guess, String target){

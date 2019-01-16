@@ -2,9 +2,10 @@ package uniupo.gaborgalazzo.calendar.gui;
 
 import uniupo.gaborgalazzo.calendar.domain.Agenda;
 import uniupo.gaborgalazzo.calendar.domain.Appointment;
+import uniupo.gaborgalazzo.calendar.exception.AppointmentParsingException;
 import uniupo.gaborgalazzo.calendar.exception.AppointmentOverlapException;
-import uniupo.gaborgalazzo.calendar.exception.AppointmentJsonParsingException;
 
+import javax.management.InstanceNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,10 +14,16 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Gui.
+ */
 public class GUI
 {
 	private Agenda agenda;
 
+	/**
+	 * Instantiates a new Gui.
+	 */
 	public GUI(){
 		this.agenda = new Agenda();
 	}
@@ -32,6 +39,9 @@ public class GUI
 	}
 
 
+	/**
+	 * Start the application loop
+	 */
 	public void start()
 	{
 		System.out.println("GABOR GALAZZO 20024195 2018-2019");
@@ -110,8 +120,6 @@ public class GUI
 			int index = Input.readInt("Which one you want to modify? (number)\n>")-1;
 			old = res.get(index);
 
-			agenda.remove(old);
-
 			String date = Input.readString("Date (dd-MM-yyyy)[default: " + old.getDate() + "]: ");
 			if (date.isEmpty())
 				date = old.getDate();
@@ -129,22 +137,16 @@ public class GUI
 			if (where.isEmpty())
 				where = old.getWhere();
 
-			Appointment appointment = new Appointment(date, time, duration, with, where);
-			agenda.add(appointment);
+
+
+			agenda.edit(old, date, time, duration, with, where);
 
 			System.out.println();
 			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
 			System.out.println();
 
-		}  catch (AppointmentOverlapException | DateTimeParseException e)
+		}  catch (AppointmentOverlapException | DateTimeParseException | InvalidParameterException| InstanceNotFoundException e)
 		{
-			try
-			{
-				agenda.add(old);
-			} catch (AppointmentOverlapException e1)
-			{
-				throw new RuntimeException(e1);
-			}
 			handleError("Can't create appointment!", e);
 		}
 	}
@@ -162,13 +164,13 @@ public class GUI
 		try
 		{
 			FileReader fileReader = new FileReader(filename);
-			ArrayList<AppointmentJsonParsingException> errors = agenda.readAgenda(fileReader);
+			ArrayList<AppointmentParsingException> errors = agenda.readAgenda(fileReader);
 			fileReader.close();
 			if(errors.size() == 0)
 				System.out.println("APPOINTMENT LOADED SUCCESSFULLY from "+filename+"!");
 			else{
 				System.out.println("ERRORS: "+errors.size());
-				for(AppointmentJsonParsingException error: errors){
+				for(AppointmentParsingException error: errors){
 					System.out.println("_____________________________");
 					System.out.println(error.getMessage());
 					System.out.println("_____________________________");
@@ -237,10 +239,10 @@ public class GUI
 	{
 		System.out.println("REMOVE APPOINTMENT ACTION");
 		List<Appointment> res = agenda.getAll();
-
+		printIndexedList(res);
 		try
 		{
-			int index = Input.readInt("Which one you want to remove? (number)\n>");
+			int index = Input.readInt("Which one you want to remove? (index)\n>");
 			agenda.remove(res.get(index - 1));
 			System.out.println();
 			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
@@ -295,4 +297,6 @@ public class GUI
 		System.out.println(message);
 		System.out.println("Error: "+e.getMessage());
 	}
+
+
 }

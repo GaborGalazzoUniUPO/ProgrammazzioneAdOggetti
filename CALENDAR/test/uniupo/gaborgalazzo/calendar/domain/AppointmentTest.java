@@ -20,13 +20,13 @@ public class AppointmentTest
 	private Appointment appointment;
 
 	@Before
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		appointment = TestUtils.randomAppointment();
 	}
 
 	@Test
-	public void getDDate()
+	public void getDateTime()
 	{
 		LocalDateTime actual = appointment.getDateTime();
 		assertEquals(appointment.getDate(),APPOINTMENT_DATE_FORMAT.format(actual));
@@ -34,7 +34,7 @@ public class AppointmentTest
 	}
 
 	@Test
-	public void getDate() throws ParseException
+	public void getDate()
 	{
 		assertNotNull(appointment.getDate());
 		assertNotNull(APPOINTMENT_DATE_FORMAT.parse(appointment.getDate()));
@@ -71,7 +71,7 @@ public class AppointmentTest
 	}
 
 	@Test
-	public void getTime() throws ParseException
+	public void getTime()
 	{
 		assertNotNull(appointment.getTime());
 		assertNotNull(APPOINTMENT_TIME_FORMAT.parse(appointment.getTime()));
@@ -113,10 +113,10 @@ public class AppointmentTest
 
 
 	@Test
-	public void compareTo() throws ParseException
+	public void compareTo()
 	{
-		String dateNext = APPOINTMENT_DATE_FORMAT.format(LocalDateTime.from(appointment.getDateTime()).plusDays(TimeUnit.DAYS.toMillis( 2)));
-		String datePrev = APPOINTMENT_DATE_FORMAT.format(LocalDateTime.from(appointment.getDateTime()).minusDays(TimeUnit.DAYS.toMillis( 2)));
+		String dateNext = APPOINTMENT_DATE_FORMAT.format(LocalDateTime.from(appointment.getDateTime()).plusDays(2));
+		String datePrev = APPOINTMENT_DATE_FORMAT.format(LocalDateTime.from(appointment.getDateTime()).minusDays(2));
 		Appointment aNext = TestUtils.randomAppointment(dateNext, appointment.getTime());
 		Appointment aPrev = TestUtils.randomAppointment(datePrev, appointment.getTime());
 		assertEquals(appointment.compareTo(aNext), appointment.getDateTime().compareTo(aNext.getDateTime()));
@@ -126,7 +126,6 @@ public class AppointmentTest
 		assertEquals(appointment.compareTo(appointment), appointment.getDateTime().compareTo(appointment.getDateTime()));
 		assertTrue(appointment.compareTo(appointment) == 0);
 	}
-
 
 
 }

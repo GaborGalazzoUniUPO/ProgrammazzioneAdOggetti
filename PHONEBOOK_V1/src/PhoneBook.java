@@ -20,8 +20,8 @@ public class PhoneBook {
     /**
      * Add an element to the PhoneBook
      * @param s The element to add
-     * @return  1: Added Correctly <br/>
-     *          0: Duplicate found: NOT ADDED <br/>
+     * @return  1: Added Correctly <br>
+     *          0: Duplicate found: NOT ADDED <br>
      *          -1: MAX_SIZE achieved: NOT ADDED
      */
     public static int add(String s) {
