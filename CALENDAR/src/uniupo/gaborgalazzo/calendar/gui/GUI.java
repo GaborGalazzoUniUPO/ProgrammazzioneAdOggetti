@@ -145,7 +145,7 @@ public class GUI
 			System.out.println("APPOINTMENT REMOVED SUCCESSFULLY!");
 			System.out.println();
 
-		}  catch (AppointmentOverlapException | DateTimeParseException | InvalidParameterException| InstanceNotFoundException e)
+		}  catch (Exception e)
 		{
 			handleError("Can't create appointment!", e);
 		}
@@ -271,7 +271,7 @@ public class GUI
 			System.out.println("APPOINTMENT ADDED SUCCESSFULLY!");
 			System.out.println();
 
-		} catch (DateTimeParseException | InvalidParameterException| AppointmentOverlapException e)
+		} catch (Exception e)
 		{
 			handleError("Can't create appointment!", e);
 		}
