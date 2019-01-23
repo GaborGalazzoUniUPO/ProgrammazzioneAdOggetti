@@ -132,19 +132,34 @@ public class AppointmentTest
 	public void equals()
 	{
 
-		assertTrue(appointment.equals(appointment));
-		Appointment clone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration(), appointment.getWith(), appointment.getWhere());
-		assertTrue(appointment.equals(clone));
-		Appointment notClone = new Appointment(appointment.getDateTime().plusDays(TestUtils.randomInteger(10,20)).format(APPOINTMENT_DATE_FORMAT), appointment.getTime(), appointment.getDuration(), appointment.getWith(), appointment.getWhere());
-		assertFalse(appointment.equals(notClone));
-		notClone = new Appointment(appointment.getDate(), appointment.getDateTime().plusMinutes(TestUtils.randomInteger(10,20)).format(APPOINTMENT_TIME_FORMAT), appointment.getDuration(), appointment.getWith(), appointment.getWhere());
-		assertFalse(appointment.equals(notClone));
-		notClone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration() + TestUtils.randomInteger(10,20), appointment.getWith(), appointment.getWhere());
-		assertFalse(appointment.equals(notClone));
-		notClone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration(), appointment.getWith() + TestUtils.randomString(3), appointment.getWhere());
-		assertFalse(appointment.equals(notClone));
-		notClone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration(), appointment.getWith(), appointment.getWhere() + TestUtils.randomString(3));
-		assertFalse(appointment.equals(notClone));
+		assertEquals(appointment, appointment);
+		Appointment clone =
+				new Appointment(appointment.getDate(), appointment.getTime(),
+						appointment.getDuration(), appointment.getWith(), appointment.getWhere());
+		assertEquals(appointment, clone);
+
+		Appointment notClone =
+				new Appointment(appointment.getDateTime().plusDays(TestUtils.randomInteger(10,20)).format(APPOINTMENT_DATE_FORMAT),
+						appointment.getTime(), appointment.getDuration(), appointment.getWith(), appointment.getWhere());
+		assertNotEquals(appointment, notClone);
+
+		notClone =
+				new Appointment(appointment.getDate(), appointment.getDateTime().plusMinutes(TestUtils.randomInteger(10,20)).format(APPOINTMENT_TIME_FORMAT),
+						appointment.getDuration(), appointment.getWith(), appointment.getWhere());
+		assertNotEquals(appointment, notClone);
+
+		notClone =
+				new Appointment(appointment.getDate(), appointment.getTime(),
+				appointment.getDuration() + TestUtils.randomInteger(10,20), appointment.getWith(), appointment.getWhere());
+		assertNotEquals(appointment, notClone);
+
+		notClone = new Appointment(appointment.getDate(), appointment.getTime(),
+				appointment.getDuration(), appointment.getWith() + TestUtils.randomString(3), appointment.getWhere());
+		assertNotEquals(appointment, notClone);
+
+		notClone = new Appointment(appointment.getDate(), appointment.getTime(),
+				appointment.getDuration(), appointment.getWith(), appointment.getWhere() + TestUtils.randomString(3));
+		assertNotEquals(appointment, notClone);
 	}
 
 
