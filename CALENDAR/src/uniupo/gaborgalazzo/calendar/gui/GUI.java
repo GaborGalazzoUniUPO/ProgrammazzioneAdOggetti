@@ -295,7 +295,7 @@ public class GUI
 
 	private void handleError(String message, Exception e){
 		System.out.println(message);
-		System.out.println("Error: "+e.getMessage());
+		System.out.println("Error: "+e);
 	}
 
 

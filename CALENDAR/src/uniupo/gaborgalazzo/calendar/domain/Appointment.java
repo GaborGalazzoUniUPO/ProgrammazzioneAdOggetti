@@ -146,13 +146,6 @@ public class Appointment implements Comparable<Appointment>
 	}
 
 	@Override
-	public int hashCode()
-	{
-
-		return Objects.hash(getDate(), getTime(), getDuration(), getWith(), getWhere());
-	}
-
-	@Override
 	public String toString()
 	{
 		return "\n" +

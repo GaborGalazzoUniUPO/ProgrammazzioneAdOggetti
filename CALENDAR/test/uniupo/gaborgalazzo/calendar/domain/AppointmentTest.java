@@ -128,4 +128,38 @@ public class AppointmentTest
 	}
 
 
+	@Test
+	public void equals()
+	{
+
+		assertTrue(appointment.equals(appointment));
+		Appointment clone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration(), appointment.getWith(), appointment.getWhere());
+		assertTrue(appointment.equals(clone));
+		Appointment notClone = new Appointment(appointment.getDateTime().plusDays(TestUtils.randomInteger(10,20)).format(APPOINTMENT_DATE_FORMAT), appointment.getTime(), appointment.getDuration(), appointment.getWith(), appointment.getWhere());
+		assertFalse(appointment.equals(notClone));
+		notClone = new Appointment(appointment.getDate(), appointment.getDateTime().plusMinutes(TestUtils.randomInteger(10,20)).format(APPOINTMENT_TIME_FORMAT), appointment.getDuration(), appointment.getWith(), appointment.getWhere());
+		assertFalse(appointment.equals(notClone));
+		notClone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration() + TestUtils.randomInteger(10,20), appointment.getWith(), appointment.getWhere());
+		assertFalse(appointment.equals(notClone));
+		notClone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration(), appointment.getWith() + TestUtils.randomString(3), appointment.getWhere());
+		assertFalse(appointment.equals(notClone));
+		notClone = new Appointment(appointment.getDate(), appointment.getTime(), appointment.getDuration(), appointment.getWith(), appointment.getWhere() + TestUtils.randomString(3));
+		assertFalse(appointment.equals(notClone));
+	}
+
+
+	@Test
+	public void toStringT()
+	{
+		assertEquals( "\n" +
+				String.format("%-12s", "Date:") + appointment.getDate() + "\n" +
+				String.format("%-12s", "Time:") + appointment.getTime() + "\n" +
+				String.format("%-12s", "Duration:") + appointment.getDuration() + "\n" +
+				String.format("%-12s", "With Whom:") + appointment.getWith() + "\n" +
+				String.format("%-12s", "Where:") + appointment.getWhere() + "\n" +
+				"\n", appointment.toString());
+	}
+
+
+
 }
